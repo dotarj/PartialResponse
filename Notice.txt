@@ -1,0 +1,5 @@
+Copyright (c) Arjen Post
+
+Portions of this software were developed by Microsoft Open 
+Technologies, Inc. They are extracted from ASP.NET Web API 
+(http://aspnetwebstack.codeplex.com/) and slightly modified.
