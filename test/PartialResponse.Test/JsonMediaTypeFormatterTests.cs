@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace PartialResponse.Test
@@ -362,6 +363,43 @@ namespace PartialResponse.Test
                 Assert.AreEqual(value, result);
             }
 
+            [TestMethod]
+            public async Task ShouldBypassPartialResponseOnNon200Responses()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=Id");
+                var httpContext = new MockHttpContext();
+                httpContext.Response.StatusCode = 404;
+
+                request.Properties["MS_HttpContext"] = httpContext;
+
+                var value = new Error() { Message = "Error!" };
+
+                // Act
+                var result = await Test(request, value);
+
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.AreEqual(value.Message, result.Message);
+            }
+
+            [TestMethod]
+            public async Task ShouldBypassPartialResponse()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=Id");
+                request.SetBypassPartialResponse(true);
+
+                var value = new Error() { Message = "Error!" };
+
+                // Act
+                var result = await Test(request, value);
+
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.AreEqual(value.Message, result.Message);
+            }
+
             private async static Task<T> Test<T>(HttpRequestMessage request, T value, bool ignoreCase = false)
             {
                 var formatter = new PartialJsonMediaTypeFormatter() { IgnoreCase = ignoreCase }.GetPerRequestFormatterInstance(null, request, null);
@@ -517,6 +555,34 @@ namespace PartialResponse.Test
             public IEnumerable<Character> Characters { get; set; }
 
             public Dictionary<string, string> Links { get; set; }
+        }
+
+        public class Error
+        {
+            public string Message { get; set; }
+        }
+
+        public class MockHttpContext : HttpContextBase
+        {
+            private HttpResponseBase response;
+
+            public override HttpResponseBase Response
+            {
+                get
+                {
+                    if (response == null)
+                    {
+                        response = new MochHttpResponse();
+                    }
+
+                    return response;
+                }
+            }
+        }
+
+        public class MochHttpResponse : HttpResponseBase
+        {
+            public override int StatusCode { get; set; }
         }
     }
 }

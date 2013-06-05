@@ -33,7 +33,7 @@ namespace PartialResponse.Net.Http.Formatting
         private RequestHeaderMapping _requestHeaderMapping;
 #endif
 
-        public const string BypassPartialResponse = "BypassPartialResponse";
+        internal const string BypassPartialResponse = "BypassPartialResponse";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialResponse.Net.Http.Formatting.PartialJsonMediaTypeFormatter"/>
@@ -310,12 +310,12 @@ namespace PartialResponse.Net.Http.Formatting
         }
 
         /// <summary>
-        /// Gets a list of fields for the current request.
+        /// Gets a list of partial response fields for the current request.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>A <see cref="System.Collections.ObjectModel.Collection{string}"/> that contains the specified fields for the 
-        /// current request.</returns>
-        protected virtual Collection<string> GetFields(HttpRequestMessage request)
+        /// current request, or null if all fields should by serialized.</returns>
+        protected virtual Collection<string> GetPartialResponseFields(HttpRequestMessage request)
         {
             var queryOption = HttpUtility.ParseQueryString(request.RequestUri.Query)["fields"];
 
@@ -337,15 +337,15 @@ namespace PartialResponse.Net.Http.Formatting
         }
 
         /// <summary>
-        /// Determines wether the current node should be serialized.
+        /// Returns a value that indicates whether the field should be serialized.
         /// </summary>
         /// <param name="field">The field.</param>
         /// <param name="tokenType">The type.</param>
         /// <returns>True if the value should be serialized, otherwise false.</returns>
-        protected virtual bool ShouldSerialize(string field, JsonTokenType tokenType)
+        protected virtual bool ShouldSerialize(string field)
         {
             var pattern = PartialJsonMediaTypeFormatterUtilities.GetRegexPatternForField(field);
-            RegexOptions regexOptions = RegexOptions.None;
+            var regexOptions = RegexOptions.None;
 
             if (IgnoreCase)
             {
@@ -355,18 +355,23 @@ namespace PartialResponse.Net.Http.Formatting
             return _fields.Any(f => Regex.IsMatch(f, pattern, regexOptions));
         }
 
-        private bool ShouldBypassPartialResponse()
+        /// <summary>
+        /// Returns a value that indicates whether partial response should be bypassed.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>True if the partial response should be bypassed, otherwise false.</returns>
+        protected virtual bool ShouldBypassPartialResponse(HttpRequestMessage request)
         {
-            if (_request.Properties.ContainsKey(BypassPartialResponse))
+            if (request.GetBypassPartialResponse())
             {
-                var bypassPartialResponse = _request.Properties[BypassPartialResponse];
+                return true;
+            }
 
-                if (!(bypassPartialResponse is bool))
-                {
-                    throw new InvalidOperationException("Request property BypassPartialResponse should be of type bool.");
-                }
+            var httpContext =  request.GetHttpContext();
 
-                return (bool)bypassPartialResponse;
+            if (httpContext != null)
+            {
+                return httpContext.Response.StatusCode != 200;
             }
 
             return false;
@@ -374,9 +379,6 @@ namespace PartialResponse.Net.Http.Formatting
 
         private void WriteToStream(Type type, object value, Stream writeStream, HttpContent content)
         {
-#if DEBUG
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-#endif
             Encoding effectiveEncoding = SelectCharacterEncoding(content == null ? null : content.Headers);
 
             using (JsonTextWriter jsonTextWriter = new JsonTextWriter(new StreamWriter(writeStream, effectiveEncoding)) { CloseOutput = false })
@@ -387,9 +389,9 @@ namespace PartialResponse.Net.Http.Formatting
                 }
                 JsonSerializer jsonSerializer = JsonSerializer.Create(_jsonSerializerSettings);
 
-                if (!ShouldBypassPartialResponse())
+                if (!ShouldBypassPartialResponse(_request))
                 {
-                    _fields = GetFields(_request);
+                    _fields = GetPartialResponseFields(_request);
                 }
 
                 if (_fields == null)
@@ -403,12 +405,6 @@ namespace PartialResponse.Net.Http.Formatting
 
                 jsonTextWriter.Flush();
             }
-
-#if DEBUG
-            stopwatch.Stop();
-
-            System.Diagnostics.Debug.WriteLine(string.Format("Serialization took {0} ms", stopwatch.ElapsedMilliseconds));
-#endif
         }
     }
 }

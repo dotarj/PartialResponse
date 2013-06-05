@@ -1,5 +1,4 @@
-﻿using PartialResponse.Net.Http.Formatting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -22,8 +21,6 @@ namespace PartialResponse.Demo
 
             if (result == null)
             {
-                Request.Properties.Add(PartialJsonMediaTypeFormatter.BypassPartialResponse, true);
-
                 return Request.CreateResponse<Error>(HttpStatusCode.NotFound, new Error() { Message = string.Format("No game found with id {0}.", id) });
             }
 

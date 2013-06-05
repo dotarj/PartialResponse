@@ -31,10 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CloneableExtensions.cs" />
+    <Compile Include="Common\HttpRequestMessageExtensions.cs" />
     <Compile Include="Common\TaskHelpers.cs" />
     <Compile Include="FormattingUtilities.cs" />
     <Compile Include="Formatting\Fields.cs" />
-    <Compile Include="Formatting\JsonTokenType.cs" />
     <Compile Include="Formatting\MediaTypeConstants.cs" />
     <Compile Include="Formatting\JsonContractResolver.cs" />
     <Compile Include="Formatting\PartialJsonMediaTypeFormatter.cs" />

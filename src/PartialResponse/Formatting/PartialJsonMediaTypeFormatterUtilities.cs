@@ -38,7 +38,7 @@ namespace PartialResponse.Net.Http.Formatting
             return patternBuilder.ToString();
         }
 
-        internal static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, JsonTokenType, bool> shouldSerialize)
+        internal static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
         {
             if (value == null)
             {
@@ -74,7 +74,7 @@ namespace PartialResponse.Net.Http.Formatting
             }
         }
 
-        private static void RemoveArrayElements(JArray array, string currentPath, Func<string, JsonTokenType, bool> shouldSerialize, Dictionary<string, bool> cache)
+        private static void RemoveArrayElements(JArray array, string currentPath, Func<string, bool> shouldSerialize, Dictionary<string, bool> cache)
         {
             array.OfType<JObject>()
                 .ToList()
@@ -98,7 +98,7 @@ namespace PartialResponse.Net.Http.Formatting
             }
         }
 
-        private static void RemoveObjectProperties(JObject @object, string currentPath, Func<string, JsonTokenType, bool> shouldSerialize, Dictionary<string, bool> cache)
+        private static void RemoveObjectProperties(JObject @object, string currentPath, Func<string, bool> shouldSerialize, Dictionary<string, bool> cache)
         {
             @object.Properties()
                 .Where(property =>
@@ -110,7 +110,7 @@ namespace PartialResponse.Net.Http.Formatting
                         return cache[path];
                     }
 
-                    var result = !shouldSerialize(path, GetTokenType(property.Value));
+                    var result = !shouldSerialize(path);
 
                     cache.Add(path, result);
 
@@ -154,22 +154,6 @@ namespace PartialResponse.Net.Http.Formatting
                 {
                     @object.Remove();
                 }
-            }
-        }
-
-        private static JsonTokenType GetTokenType(JToken token)
-        {
-            if (token is JArray)
-            {
-                return JsonTokenType.Array;
-            }
-            else if (token is JObject)
-            {
-                return JsonTokenType.Object;
-            }
-            else
-            {
-                return JsonTokenType.Value;
             }
         }
     }
