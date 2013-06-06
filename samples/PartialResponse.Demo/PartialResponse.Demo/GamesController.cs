@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;

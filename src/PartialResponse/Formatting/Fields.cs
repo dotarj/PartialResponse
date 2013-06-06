@@ -1,10 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 namespace PartialResponse.Net.Http.Formatting
 {
     internal static class Fields
     {
+        private const string ValidationPattern = @"^\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?))(\s*,\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?)))*\s*$";
+
         internal static bool TryParse(string s, out Collection<string> result)
         {
             var temp = new Collection<string>();
@@ -26,9 +30,7 @@ namespace PartialResponse.Net.Http.Formatting
 
         private static bool Validate(string fields)
         {
-            var pattern = @"^\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?))(\s*,\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?)))*\s*$";
-
-            if (!Regex.IsMatch(fields, pattern))
+            if (!Regex.IsMatch(fields, ValidationPattern))
             {
                 return false;
             }

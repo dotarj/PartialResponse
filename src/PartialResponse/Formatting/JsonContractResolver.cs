@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net.Http.Formatting;
 using System.Reflection;

@@ -1,4 +1,6 @@
-﻿using PartialResponse.Net.Http.Formatting;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using PartialResponse.Net.Http.Formatting;
 using System.Web;
 
 namespace System.Net.Http
@@ -27,6 +29,11 @@ namespace System.Net.Http
         /// <returns>True if partial response should be bypassed, otherwise false.</returns>
         public static bool GetBypassPartialResponse(this HttpRequestMessage request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
             object value;
 
             if (request.Properties.TryGetValue(PartialJsonMediaTypeFormatter.BypassPartialResponse, out value))

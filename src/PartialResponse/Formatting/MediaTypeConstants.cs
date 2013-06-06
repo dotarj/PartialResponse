@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using System.Net.Http.Headers;
 
 namespace PartialResponse.Net.Http.Formatting
 {

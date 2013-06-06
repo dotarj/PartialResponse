@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PartialResponse.Net.Http.Formatting;
 using System.Collections.Generic;
 using System.IO;

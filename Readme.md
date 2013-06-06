@@ -1,12 +1,18 @@
 #ASP.NET Web API Partial Response
-Partial Response provides partial response (a.k.a. fields) support for ASP.NET Web API.
+Partial Response provides partial response (a.k.a. ```fields```) support for ASP.NET Web API.
 
-##Usage
-Register the PartialJsonMediaTypeFormatter in Application_Start (in Global.asax):
+##Usage of partial response
+Register the ```PartialJsonMediaTypeFormatter``` in ```Application_Start``` (in Global.asax):
 
 ```
 GlobalConfiguration.Configuration.Formatters.Clear();
 GlobalConfiguration.Configuration.Formatters.Add(new PartialJsonMediaTypeFormatter() { IgnoreCase = true });
+```
+
+Now partial response will be applied to all responses with HTTP status code 200. To force enable/disable partial response for the current response, call the following extension method (in ```System.Net.Http```) on the request:
+
+```
+Request.SetBypassPartialResponse(true|false);
 ```
 
 ##Understanding the ```fields``` parameter
@@ -29,5 +35,3 @@ In practice, these rules often allow several different ```fields``` parameter va
 **Note:** As with all query parameter values, the fields parameter value must be URL encoded. For better readability, the examples in this document omit the encoding.
 
 **Note:** Due to the relatively slow performance of LINQ to JSON (Json.NET), the usage of PartialJsonMediaTypeFormatter has a performance impact compared to the regular Json.NET serializer. Because of the reduced traffic, the overhead in time could be neglected.
-
-**Note:** For now only JSON is supported, but XML support is in development.

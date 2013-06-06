@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.ObjectModel;
@@ -120,6 +122,9 @@ namespace PartialResponse.Net.Http.Formatting
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether fields should be compared ignoring or honoring their case.
+        /// </summary>
         public bool IgnoreCase { get; set; }
 
         /// <summary>
@@ -317,6 +322,11 @@ namespace PartialResponse.Net.Http.Formatting
         /// current request, or null if all fields should by serialized.</returns>
         protected virtual Collection<string> GetPartialResponseFields(HttpRequestMessage request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
             var queryOption = HttpUtility.ParseQueryString(request.RequestUri.Query)["fields"];
 
             if (queryOption != null)
@@ -344,6 +354,11 @@ namespace PartialResponse.Net.Http.Formatting
         /// <returns>True if the value should be serialized, otherwise false.</returns>
         protected virtual bool ShouldSerialize(string field)
         {
+            if (field == null)
+            {
+                throw new ArgumentNullException("field");
+            }
+
             var pattern = PartialJsonMediaTypeFormatterUtilities.GetRegexPatternForField(field);
             var regexOptions = RegexOptions.None;
 
@@ -362,6 +377,11 @@ namespace PartialResponse.Net.Http.Formatting
         /// <returns>True if the partial response should be bypassed, otherwise false.</returns>
         protected virtual bool ShouldBypassPartialResponse(HttpRequestMessage request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
             if (request.GetBypassPartialResponse())
             {
                 return true;

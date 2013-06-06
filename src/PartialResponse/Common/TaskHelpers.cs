@@ -1,4 +1,6 @@
-﻿namespace System.Threading.Tasks
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+namespace System.Threading.Tasks
 {
     /// <summary>
     /// Helpers for safely using Task libraries. 

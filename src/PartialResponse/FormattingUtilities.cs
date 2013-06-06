@@ -1,4 +1,6 @@
-﻿namespace PartialResponse.Net.Http
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
+namespace PartialResponse.Net.Http
 {
     /// <summary>
     /// Provides various internal utility functions
