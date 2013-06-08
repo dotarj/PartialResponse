@@ -114,7 +114,7 @@ namespace PartialResponse.Net.Http.Formatting
 
                     if (firstParenthesis > -1)
                     {
-                        var newBasePath = PathUtilities.CombinePath(basePath, fields.Substring(pathStart, firstParenthesis));
+                        var newBasePath = PathUtilities.CombinePath(basePath, fields.Substring(pathStart, firstParenthesis - pathStart));
 
                         if (!GetFields(newBasePath, fields.Substring(firstParenthesis + 1, i - firstParenthesis - 1), result))
                         {

@@ -62,6 +62,39 @@ namespace PartialResponse.Test
                 await Test(request, value);
             }
 
+            [TestMethod, ExpectedException(typeof(HttpResponseException))]
+            public async Task ShouldThrowAnHttpResponseExceptionOnAnInvalidFieldsQueryOption5()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=(");
+                var value = GetData();
+
+                // Act
+                await Test(request, value);
+            }
+
+            [TestMethod, ExpectedException(typeof(HttpResponseException))]
+            public async Task ShouldThrowAnHttpResponseExceptionOnAnInvalidFieldsQueryOption6()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=)");
+                var value = GetData();
+
+                // Act
+                await Test(request, value);
+            }
+
+            [TestMethod, ExpectedException(typeof(HttpResponseException))]
+            public async Task ShouldThrowAnHttpResponseExceptionOnAnInvalidFieldsQueryOption7()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=,");
+                var value = GetData();
+
+                // Act
+                await Test(request, value);
+            }
+
             [TestMethod]
             public async Task ShouldSerializeGamePropertiesOnly()
             {
@@ -184,6 +217,54 @@ namespace PartialResponse.Test
                 Assert.AreEqual(value.First().Characters.Count(), result.First().Characters.Count());
                 Assert.AreEqual(value.First().Characters.First().Id, result.First().Characters.First().Id);
                 Assert.AreEqual(value.First().Characters.First().Name, result.First().Characters.First().Name);
+            }
+
+            [TestMethod]
+            public async Task ShouldSerializeIdAndPublisherPropertiesOnly()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=Id,Publisher(Id,Name)");
+                var value = GetData();
+
+                // Act
+                var result = await Test(request, value);
+
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.AreEqual(value.Count(), result.Count());
+                Assert.AreEqual(1, result.First().Id);
+                Assert.AreEqual(null, result.First().Name);
+                Assert.IsNull(result.First().Console);
+                Assert.IsNull(result.First().Developer);
+                Assert.IsNull(result.First().Links);
+                Assert.IsNotNull(result.First().Publisher);
+                Assert.AreEqual(value.First().Publisher.Id, result.First().Publisher.Id);
+                Assert.AreEqual(value.First().Publisher.Name, result.First().Publisher.Name);
+                Assert.IsNull(result.First().Characters);
+            }
+
+            [TestMethod]
+            public async Task ShouldSerializeIdAndPublisherNamePropertiesOnly()
+            {
+                // Arrange
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost?fields=Id,Publisher(Name)");
+                var value = GetData();
+
+                // Act
+                var result = await Test(request, value);
+
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.AreEqual(value.Count(), result.Count());
+                Assert.AreEqual(1, result.First().Id);
+                Assert.AreEqual(null, result.First().Name);
+                Assert.IsNull(result.First().Console);
+                Assert.IsNull(result.First().Developer);
+                Assert.IsNull(result.First().Links);
+                Assert.IsNotNull(result.First().Publisher);
+                Assert.AreEqual(0, result.First().Publisher.Id);
+                Assert.AreEqual(value.First().Publisher.Name, result.First().Publisher.Name);
+                Assert.IsNull(result.First().Characters);
             }
 
             [TestMethod]
