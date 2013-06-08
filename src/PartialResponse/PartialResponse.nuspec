@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>WebApi.PartialResponse</id>
+    <version>$version$</version>
+    <title>Microsoft ASP.NET Web API Partial Response</title>
+    <authors>Arjen Post</authors>
+    <owners>Arjen Post</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/dotarj/PartialResponse</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <tags>AspNet WebApi AspNetWebApi Web Api Partial Response PartialResponse Fields</tags>
+  </metadata>
+</package>
