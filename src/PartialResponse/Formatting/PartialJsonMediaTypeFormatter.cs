@@ -229,7 +229,7 @@ namespace PartialResponse.Net.Http.Formatting
 
             try
             {
-                return Task.FromResult(ReadFromStream(type, readStream, content, formatterLogger));
+                return TaskHelpers.FromResult(ReadFromStream(type, readStream, content, formatterLogger));
             }
             catch (Exception e)
             {
