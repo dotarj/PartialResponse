@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "authors": [ "Arjen Post" ],
+  "title": "PartialResponse.Core",
+  "description": "Partial Response core components",
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.1"
+  },
+  "frameworks": {
+    "net451": {},
+    "netstandard1.6": {}
+  }
+}

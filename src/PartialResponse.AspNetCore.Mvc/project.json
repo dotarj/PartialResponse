@@ -1,0 +1,29 @@
+{
+  "packOptions": {
+    "summary": "Microsoft ASP.NET Core MVC Partial Response",
+    "tags": [ "aspnetcore", "aspnetcoremvc", "partial", "response", "partialresponse", "fields" ],
+    "owners": [ "dotarj" ],
+    "projectUrl": "https://github.com/dotarj/PartialResponse",
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/dotarj/PartialResponse"
+    }
+  },
+  "version": "1.0.0",
+  "authors": [ "Arjen Post" ],
+  "title": "PartialResponse.AspNetCore.Mvc",
+  "description": "Microsoft ASP.NET Core MVC Partial Response",
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc.Core": "1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "Newtonsoft.Json": "9.0.1"
+  },
+  "frameworks": {
+    "net451": {},
+    "netstandard1.6": {}
+  }
+}
