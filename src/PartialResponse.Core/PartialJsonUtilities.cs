@@ -1,4 +1,4 @@
-﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PartialResponse.Net.Http.Formatting
+namespace PartialResponse.Core
 {
-    internal static class PartialJsonMediaTypeFormatterUtilities
+    public static class PartialJsonUtilities
     {
-        internal static string GetRegexPatternForField(string value)
+        public static string GetRegexPatternForField(string value)
         {
             var patternBuilder = new StringBuilder();
             var parts = value.Split('/');
@@ -40,7 +40,7 @@ namespace PartialResponse.Net.Http.Formatting
             return patternBuilder.ToString();
         }
 
-        internal static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
+        public static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
         {
             if (value == null)
             {
