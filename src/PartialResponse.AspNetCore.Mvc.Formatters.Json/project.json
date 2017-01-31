@@ -1,7 +1,7 @@
 {
   "packOptions": {
-    "summary": "Microsoft ASP.NET Core MVC Partial Response",
-    "tags": [ "aspnetcore", "aspnetcoremvc", "partial", "response", "partialresponse", "fields" ],
+    "summary": "ASP.NET Core MVC formatter for partial response (fields) JSON output.",
+    "tags": [ "aspnetcore", "aspnetcoremvc", "json", "partial", "response", "partialresponse", "fields" ],
     "owners": [ "dotarj" ],
     "projectUrl": "https://github.com/dotarj/PartialResponse",
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
@@ -12,8 +12,8 @@
   },
   "version": "1.0.0",
   "authors": [ "Arjen Post" ],
-  "title": "PartialResponse.AspNetCore.Mvc",
-  "description": "Microsoft ASP.NET Core MVC Partial Response",
+  "title": "PartialResponse.AspNetCore.Mvc.Formatters.Json",
+  "description": "ASP.NET Core MVC formatter for partial response (fields) JSON output.",
   "buildOptions": {
     "warningsAsErrors": true
   },
