@@ -1,21 +1,27 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
-namespace PartialResponse.Net.Http.Formatting
+namespace PartialResponse.Core
 {
-    internal static class Fields
+    public static class Fields
     {
         private const string ValidationPattern = @"^\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?))(\s*,\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?)))*\s*$";
 
-        internal static bool TryParse(string s, out Collection<string> result)
+        public static bool TryParse(string value, out Collection<string> result)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             var temp = new Collection<string>();
 
-            if (s.Trim() != "")
+            if (value.Trim() != "")
             {
-                if (!GetFields(null, s, temp))
+                if (!GetFields(null, value, temp))
                 {
                     result = null;
 
