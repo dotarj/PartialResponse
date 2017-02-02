@@ -13,6 +13,11 @@ namespace PartialResponse.Core
     {
         public static string GetRegexPatternForField(string value)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             var patternBuilder = new StringBuilder();
             var parts = value.Split('/');
 
