@@ -212,5 +212,19 @@ namespace PartialResponse.Core.Test
             // Assert
             Assert.True(fields.Matches("foo"));
         }
+
+        [Fact]
+        public void TheMatchesMethodShouldIgnoreCase()
+        {
+            // Arrange
+            var value = "foo";
+            Fields fields = null;
+
+            // Act
+            Fields.TryParse(value, out fields);
+
+            // Assert
+            Assert.True(fields.Matches("FOO", true));
+        }
     }
 }

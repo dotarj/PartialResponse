@@ -22,16 +22,22 @@ namespace PartialResponse.Core
 
         public bool Matches(string value)
         {
+            return this.Matches(value, false);
+        }
+
+        public bool Matches(string value, bool ignoreCase)
+        {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
+            var stringComparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             var parts = value.Split('/');
 
             for (var index = 0; index < parts.Length && index < this.Parts.Length; index++)
             {
-                if (parts[index] != this.Parts[index] && this.Parts[index] != Wildcard)
+                if (!string.Equals(parts[index], this.Parts[index], stringComparison) && this.Parts[index] != Wildcard)
                 {
                     return false;
                 }

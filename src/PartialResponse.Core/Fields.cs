@@ -21,12 +21,17 @@ namespace PartialResponse.Core
 
         public bool Matches(string value)
         {
+            return this.Matches(value, false);
+        }
+
+        public bool Matches(string value, bool ignoreCase)
+        {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return this.Values.Any(v => v.Matches(value));
+            return this.Values.Any(v => v.Matches(value, ignoreCase));
         }
 
         public static bool TryParse(string value, out Fields result)
