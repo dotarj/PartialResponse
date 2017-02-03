@@ -11,40 +11,6 @@ namespace PartialResponse.Core
 {
     public static class PartialJsonUtilities
     {
-        public static string GetRegexPatternForField(string value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            var patternBuilder = new StringBuilder();
-            var parts = value.Split('/');
-
-            patternBuilder.Append("^(");
-
-            for (int i = 0; i < parts.Length - 1; i++)
-            {
-                patternBuilder.Append(string.Format(@"({0}(/", parts[i]));
-            }
-
-            patternBuilder.Append(string.Format(@"(({0}(/.+)?)|\*)", parts[parts.Length - 1]));
-
-            for (int i = 0; i < parts.Length - 2; i++)
-            {
-                patternBuilder.Append(@")?|\*)");
-            }
-
-            if (parts.Length > 1)
-            {
-                patternBuilder.Append(@")?)|\*");
-            }
-
-            patternBuilder.Append(")$");
-
-            return patternBuilder.ToString();
-        }
-
         public static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
         {
             if (value == null)

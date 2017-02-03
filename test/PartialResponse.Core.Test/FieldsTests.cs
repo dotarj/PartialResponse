@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -8,36 +7,36 @@ namespace PartialResponse.Core.Test
     public class FieldsTests
     {
         [Fact]
-        public void ShouldThrowIfValueIfNull()
+        public void TheConstructorShouldThrowIfValueIsNull()
         {
             // Arrange
             string value = null;
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Assert.Throws<ArgumentNullException>(() => Fields.TryParse(value, out fields));
         }
 
         [Fact]
-        public void ShouldReturnEmptyCollectionIfValueIsEmpty()
+        public void TheTryParseMethodShouldReturnEmptyCollectionIfValueIsEmpty()
         {
             // Arrange
             var value = "";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Empty(fields);
+            Assert.Empty(fields.Values);
         }
 
         [Fact]
-        public void ShouldReturnFalseIfInvalidValue()
+        public void TheTryParseMethodShouldReturnFalseIfInvalidValue()
         {
             // Arrange
             var value = "foo(";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             var result = Fields.TryParse(value, out fields);
@@ -47,11 +46,11 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
-        public void ShouldReturnTrueIfValidValue()
+        public void TheTryParseMethodShouldReturnTrueIfValidValue()
         {
             // Arrange
             var value = "foo";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             var result = Fields.TryParse(value, out fields);
@@ -61,129 +60,157 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
-        public void ShouldParseProperty()
+        public void TheTryParseMethodShouldParseProperty()
         {
             // Arrange
             var value = "foo";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal("foo", fields.Single());
+            Assert.Equal("foo", fields.Values.Single().ToString());
         }
 
         [Fact]
-        public void ShouldParseMultipleProperties()
+        public void TheTryParseMethodShouldParseMultipleProperties()
         {
             // Arrange
             var value = "foo,bar";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal(new [] { "foo", "bar" }, fields);
+            Assert.Equal(new [] { "foo", "bar" }, fields.Values.Select(v => v.ToString()));
         }
 
         [Fact]
-        public void ShouldParseGroupedProperty()
+        public void TheTryParseMethodShouldParseGroupedProperty()
         {
             // Arrange
             var value = "foo(bar)";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal("foo/bar", fields.Single());
+            Assert.Equal("foo/bar", fields.Values.Single().ToString());
         }
 
         [Fact]
-        public void ShouldParseGroupedMultipleProperties()
+        public void TheTryParseMethodShouldParseGroupedMultipleProperties()
         {
             // Arrange
             var value = "foo(bar,baz)";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal(new [] { "foo/bar", "foo/baz" }, fields);
+            Assert.Equal(new [] { "foo/bar", "foo/baz" }, fields.Values.Select(v => v.ToString()));
         }
 
         [Fact]
-        public void ShouldParseNestedGroupedProperty()
+        public void TheTryParseMethodShouldParseNestedGroupedProperty()
         {
             // Arrange
             var value = "foo(bar(baz))";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal("foo/bar/baz", fields.Single());
+            Assert.Equal("foo/bar/baz", fields.Values.Single().ToString());
         }
 
         [Fact]
-        public void ShouldParseMultipleGroupedMultipleProperties()
+        public void TheTryParseMethodShouldParseMultipleGroupedMultipleProperties()
         {
             // Arrange
             var value = "foo(bar(baz,qux))";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal(new [] { "foo/bar/baz", "foo/bar/qux" }, fields);
+            Assert.Equal(new [] { "foo/bar/baz", "foo/bar/qux" }, fields.Values.Select(v => v.ToString()));
         }
 
         [Fact]
-        public void ShouldParseNestedProperty()
+        public void TheTryParseMethodShouldParseNestedProperty()
         {
             // Arrange
             var value = "foo/bar";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal("foo/bar", fields.Single());
+            Assert.Equal("foo/bar", fields.Values.Single().ToString());
         }
 
         [Fact]
-        public void ShouldParseGoupedNestedProperty()
+        public void TheTryParseMethodShouldParseGoupedNestedProperty()
         {
             // Arrange
             var value = "foo(bar/baz)";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal("foo/bar/baz", fields.Single());
+            Assert.Equal("foo/bar/baz", fields.Values.Single().ToString());
         }
 
         [Fact]
-        public void ShouldParseGoupedNestedMultipleProperties()
+        public void TheTryParseMethodShouldParseGoupedNestedMultipleProperties()
         {
             // Arrange
             var value = "foo(bar/baz,qux/quux)";
-            Collection<string> fields = null;
+            Fields fields = null;
 
             // Act
             Fields.TryParse(value, out fields);
 
             // Assert
-            Assert.Equal(new [] { "foo/bar/baz", "foo/qux/quux" }, fields);
+            Assert.Equal(new [] { "foo/bar/baz", "foo/qux/quux" }, fields.Values.Select(v => v.ToString()));
+        }
+
+        [Fact]
+        public void TheMatchesMethodShouldReturnFalseForDifferentValues()
+        {
+            // Arrange
+            var value = "foo";
+            Fields fields = null;
+
+            // Act
+            Fields.TryParse(value, out fields);
+
+            // Assert
+            Assert.False(fields.Matches("bar"));
+        }
+
+        [Fact]
+        public void TheMatchesMethodShouldReturnTrueForSameValues()
+        {
+            // Arrange
+            var value = "foo";
+            Fields fields = null;
+
+            // Act
+            Fields.TryParse(value, out fields);
+
+            // Assert
+            Assert.True(fields.Matches("foo"));
         }
     }
 }

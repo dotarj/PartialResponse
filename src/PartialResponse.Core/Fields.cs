@@ -1,27 +1,46 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace PartialResponse.Core
 {
-    public static class Fields
+    public class Fields
     {
         private const string ValidationPattern = @"^\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?))(\s*,\s*(\*|([^\/&^*&^,&^\s]+(/[^\/&^*&^,&^\s]+)*(/\*)?)))*\s*$";
 
-        public static bool TryParse(string value, out Collection<string> result)
+        private Fields(List<Field> values)
+        {
+            this.Values = values.AsReadOnly();
+        }
+
+        public ReadOnlyCollection<Field> Values { get; private set; }
+
+        public bool Matches(string value)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            var temp = new Collection<string>();
+            return this.Values.Any(v => v.Matches(value));
+        }
+
+        public static bool TryParse(string value, out Fields result)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var values = new List<Field>();
 
             if (value.Trim() != "")
             {
-                if (!GetFields(null, value, temp))
+                if (!GetFields(null, value, values))
                 {
                     result = null;
 
@@ -29,7 +48,7 @@ namespace PartialResponse.Core
                 }
             }
 
-            result = temp;
+            result = new Fields(values);
 
             return true;
         }
@@ -44,7 +63,7 @@ namespace PartialResponse.Core
             return true;
         }
 
-        private static bool GetFields(string basePath, string fields, Collection<string> result)
+        private static bool GetFields(string basePath, string fields, List<Field> result)
         {
             if (!Validate(fields))
             {
@@ -103,7 +122,7 @@ namespace PartialResponse.Core
                     }
                     else
                     {
-                        result.Add(PathUtilities.CombinePath(basePath, fields.Substring(pathStart, i - pathStart).Trim()));
+                        result.Add(new Field(PathUtilities.CombinePath(basePath, fields.Substring(pathStart, i - pathStart).Trim())));
                     }
 
                     firstParenthesis = -1;
@@ -129,7 +148,7 @@ namespace PartialResponse.Core
                     }
                     else
                     {
-                        result.Add(PathUtilities.CombinePath(basePath, fields.Substring(pathStart, i - pathStart + 1).Trim()));
+                        result.Add(new Field(PathUtilities.CombinePath(basePath, fields.Substring(pathStart, i - pathStart + 1).Trim())));
                     }
                 }
             }
