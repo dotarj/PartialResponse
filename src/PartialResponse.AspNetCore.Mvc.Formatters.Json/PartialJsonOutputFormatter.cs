@@ -3,11 +3,14 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
 using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
+using PartialResponse.Core;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters
 {
@@ -62,26 +65,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         protected JsonSerializerSettings SerializerSettings { get; }
 
         /// <summary>
-        /// Writes the given <paramref name="value"/> as JSON using the given
-        /// <paramref name="writer"/>.
-        /// </summary>
-        /// <param name="writer">The <see cref="TextWriter"/> used to write the <paramref name="value"/></param>
-        /// <param name="value">The value to write as JSON.</param>
-        public void WriteObject(TextWriter writer, object value)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-
-            using (var jsonWriter = CreateJsonWriter(writer))
-            {
-                var jsonSerializer = CreateJsonSerializer();
-                jsonSerializer.Serialize(jsonWriter, value);
-            }
-        }
-
-        /// <summary>
         /// Called during serialization to create the <see cref="JsonWriter"/>.
         /// </summary>
         /// <param name="writer">The <see cref="TextWriter"/> used to write.</param>
@@ -116,6 +99,62 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             return _serializer;
         }
 
+        /// <summary>
+        /// Gets a list of partial response fields for the current request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>A <see cref="System.Collections.ObjectModel.Collection{string}"/> that contains the specified fields for the
+        /// current request, or null if all fields should by serialized.</returns>
+        protected virtual Fields GetPartialResponseFields(HttpRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
+            var queryOption = request.Query["fields"].FirstOrDefault();
+
+            if (queryOption != null)
+            {
+                Fields fields;
+
+                if (!Fields.TryParse(queryOption, out fields))
+                {
+                    // TODO: No more HttpResponseException in ASP.NET Core.
+                    throw new Exception();
+                }
+
+                return fields;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a value that indicates whether partial response should be bypassed.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns>True if the partial response should be bypassed, otherwise false.</returns>
+        protected virtual bool ShouldBypassPartialResponse(HttpRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
+            if (request.GetBypassPartialResponse())
+            {
+                return true;
+            }
+
+            if (request.HttpContext != null)
+            {
+                return request.HttpContext.Response.StatusCode != 200;
+            }
+
+            return false;
+        }
+
         /// <inheritdoc />
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
@@ -132,7 +171,26 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             var response = context.HttpContext.Response;
             using (var writer = context.WriterFactory(response.Body, selectedEncoding))
             {
-                WriteObject(writer, context.Object);
+                using (var jsonWriter = CreateJsonWriter(writer))
+                {
+                    var jsonSerializer = CreateJsonSerializer();
+
+                    Fields fields = null;
+
+                    if (!ShouldBypassPartialResponse(context.HttpContext.Request))
+                    {
+                        fields = GetPartialResponseFields(context.HttpContext.Request);
+                    }
+
+                    if (fields == null)
+                    {
+                        jsonSerializer.Serialize(jsonWriter, context.Object);
+                    }
+                    else
+                    {
+                        PartialJsonUtilities.RemovePropertiesAndArrayElements(context.Object, jsonWriter, jsonSerializer, value => fields.Matches(value));
+                    }
+                }
 
                 // Perf: call FlushAsync to call WriteAsync on the stream with any content left in the TextWriter's
                 // buffers. This is better than just letting dispose handle it (which would result in a synchronous

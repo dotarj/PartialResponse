@@ -70,6 +70,7 @@ namespace PartialResponse.Core
 
         private static bool GetFields(string basePath, string fields, List<Field> result)
         {
+            // https://github.com/toptensoftware/SimpleExpressionEngine/blob/master/SimpleExpressionEngine/Tokenizer.cs
             if (!Validate(fields))
             {
                 return false;

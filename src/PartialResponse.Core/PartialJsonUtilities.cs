@@ -5,17 +5,16 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PartialResponse.Core
 {
     public static class PartialJsonUtilities
     {
-        public static void RemovePropertiesAndArrayElements(object value, JsonTextWriter jsonTextWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
+        public static void RemovePropertiesAndArrayElements(object value, JsonWriter jsonWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
         {
             if (value == null)
             {
-                jsonSerializer.Serialize(jsonTextWriter, value);
+                jsonSerializer.Serialize(jsonWriter, value);
             }
             else
             {
@@ -27,7 +26,7 @@ namespace PartialResponse.Core
                 {
                     RemoveArrayElements(array, null, shouldSerialize, new Dictionary<string, bool>());
 
-                    array.WriteTo(jsonTextWriter);
+                    array.WriteTo(jsonWriter);
                 }
                 else
                 {
@@ -37,11 +36,11 @@ namespace PartialResponse.Core
                     {
                         RemoveObjectProperties(@object, null, shouldSerialize, new Dictionary<string, bool>());
 
-                        @object.WriteTo(jsonTextWriter);
+                        @object.WriteTo(jsonWriter);
                     }
                     else
                     {
-                        token.WriteTo(jsonTextWriter);
+                        token.WriteTo(jsonWriter);
                     }
                 }
             }
