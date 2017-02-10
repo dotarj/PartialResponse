@@ -48,7 +48,7 @@ namespace PartialResponse.Core
                 // given value is foo/bar.
                 if (index == parts.Length - 1)
                 {
-                    return parts.Length == this.Parts.Length;
+                    return parts.Length <= this.Parts.Length;
                 }
             }
 

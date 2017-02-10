@@ -94,7 +94,7 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
-        public void TheMatchesMethodShouldReturnFalseForOtherSuffixValue()
+        public void TheMatchesMethodShouldReturnTrueForOtherSuffixValue()
         {
             // Arrange
             var field = new Field("foo/bar");
@@ -103,7 +103,7 @@ namespace PartialResponse.Core.Test
             var result = field.Matches("foo");
 
             // Assert
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]
