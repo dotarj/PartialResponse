@@ -45,91 +45,91 @@ namespace PartialResponse.Core.Test
         public void TheMatchesMethodShouldReturnFalseForDifferentValues()
         {
             // Arrange
-            var value = "foo";
+            var field = new Field("foo");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("bar");
 
             // Assert
-            Assert.False(field.Matches("bar"));
+            Assert.False(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldReturnFalseForDifferentNestedValues()
         {
             // Arrange
-            var value = "foo/bar";
+            var field = new Field("foo/bar");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("foo/baz");
 
             // Assert
-            Assert.False(field.Matches("foo/baz"));
+            Assert.False(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldReturnTrueForSameValues()
         {
             // Arrange
-            var value = "foo";
+            var field = new Field("foo");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("foo");
 
             // Assert
-            Assert.True(field.Matches("foo"));
+            Assert.True(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldReturnTrueForSamePrefixValues()
         {
             // Arrange
-            var value = "foo";
+            var field = new Field("foo");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("foo/bar");
 
             // Assert
-            Assert.True(field.Matches("foo/bar"));
+            Assert.True(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldReturnFalseForOtherSuffixValue()
         {
             // Arrange
-            var value = "foo/bar";
+            var field = new Field("foo/bar");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("foo");
 
             // Assert
-            Assert.False(field.Matches("foo"));
+            Assert.False(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldReturnTrueForWildcard()
         {
             // Arrange
-            var value = "*";
+            var field = new Field("*");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("foo");
 
             // Assert
-            Assert.True(field.Matches("foo"));
+            Assert.True(result);
         }
 
         [Fact]
         public void TheMatchesMethodShouldIgnoreCase()
         {
             // Arrange
-            var value = "foo";
+            var field = new Field("foo");
 
             // Act
-            var field = new Field(value);
+            var result = field.Matches("FOO", true);
 
             // Assert
-            Assert.True(field.Matches("FOO", true));
+            Assert.True(result);
         }
     }
 }
