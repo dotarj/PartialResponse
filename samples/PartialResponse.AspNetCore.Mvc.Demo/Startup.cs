@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PartialResponse.Extensions.DependencyInjection;
 
 namespace WebApplication
 {
@@ -24,7 +25,9 @@ namespace WebApplication
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services
+                .AddMvc(options => options.OutputFormatters.Clear())
+                .AddPartialJsonFormatters();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
