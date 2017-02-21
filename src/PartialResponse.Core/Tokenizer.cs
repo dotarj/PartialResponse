@@ -77,6 +77,11 @@ namespace PartialResponse.Core
             return token;
         }
 
+        public bool IsEndReached()
+        {
+            return this.reader.Peek() == -1;
+        }
+
         private void TakeCharactersWhile(Func<char, bool> predicate)
         {
             while (!this.IsEndReached() && predicate(this.GetCurrentCharacter()))
@@ -111,11 +116,6 @@ namespace PartialResponse.Core
             var value = this.reader.Peek();
 
             return value == -1 ? '\0' : (char)value;
-        }
-
-        private bool IsEndReached()
-        {
-            return this.reader.Peek() == -1;
         }
     }
 }
