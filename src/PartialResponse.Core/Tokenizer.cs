@@ -24,6 +24,8 @@ namespace PartialResponse.Core
             [','] = TokenType.Comma
         };
 
+        private int position = -1;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Tokenizer"/> class.
         /// </summary>
@@ -46,7 +48,7 @@ namespace PartialResponse.Core
         {
             if (this.IsEndReached())
             {
-                return new Token(null, TokenType.Eof);
+                return new Token(null, TokenType.Eof, this.position);
             }
 
             Token token;
@@ -57,19 +59,19 @@ namespace PartialResponse.Core
             {
                 this.TakeCharacter();
 
-                token = new Token(this.buffer.ToString(), tokenType);
+                token = new Token(this.buffer.ToString(), tokenType, this.position);
             }
             else if (this.IsWhiteSpace(this.GetCurrentCharacter()))
             {
                 this.TakeCharactersWhile(character => this.IsWhiteSpace(character));
 
-                token = new Token(this.buffer.ToString(), TokenType.WhiteSpace);
+                token = new Token(this.buffer.ToString(), TokenType.WhiteSpace, this.position);
             }
             else
             {
                 this.TakeCharactersWhile(character => !this.tokens.ContainsKey(character) && !this.IsWhiteSpace(character));
 
-                token = new Token(this.buffer.ToString(), TokenType.Identifier);
+                token = new Token(this.buffer.ToString(), TokenType.Identifier, this.position);
             }
 
             this.buffer.Clear();
@@ -95,6 +97,8 @@ namespace PartialResponse.Core
             this.buffer.Append(this.GetCurrentCharacter());
 
             this.reader.Read();
+
+            this.position++;
         }
 
         private bool IsWhiteSpace(char character)

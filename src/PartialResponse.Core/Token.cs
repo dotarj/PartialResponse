@@ -14,10 +14,12 @@ namespace PartialResponse.Core
         /// </summary>
         /// <param name="value">The value of the token.</param>
         /// <param name="type">The <see cref="TokenType"/> of the token.</param>
-        public Token(string value, TokenType type)
+        /// <param name="position">The start position of the token.</param>
+        public Token(string value, TokenType type, int position)
         {
             this.Value = value;
-            this.Type = type; 
+            this.Type = type;
+            this.Position = position;
         }
 
         /// <summary>
@@ -31,5 +33,11 @@ namespace PartialResponse.Core
         /// </summary>
         /// <returns>The <see cref="TokenType"/> of the token.</returns>
         public TokenType Type { get; private set; }
+
+        /// <summary>
+        /// Gets the start position of the token.
+        /// </summary>
+        /// <returns>The start position of the token.</returns>
+        public int Position { get; private set; }
     }
 }

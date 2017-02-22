@@ -47,8 +47,6 @@ namespace PartialResponse.Core
         /// </summary>
         public void Parse()
         {
-            // TODO: Reset stuff.
-
             this.NextToken();
 
             this.HandleIdentifier(acceptEnd: true);

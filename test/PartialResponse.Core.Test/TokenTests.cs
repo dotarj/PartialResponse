@@ -11,9 +11,10 @@ namespace PartialResponse.Core.Test
             // Arrange
             var value = "foo";
             var type = TokenType.Identifier;
+            var position = 1;
 
             // Act
-            var token = new Token(value, type);
+            var token = new Token(value, type, position);
 
             // Assert
             Assert.Equal(value, token.Value);
@@ -25,12 +26,28 @@ namespace PartialResponse.Core.Test
             // Arrange
             var value = "foo";
             var type = TokenType.Identifier;
+            var position = 1;
 
             // Act
-            var token = new Token(value, type);
+            var token = new Token(value, type, position);
 
             // Assert
             Assert.Equal(type, token.Type);
+        }
+
+        [Fact]
+        public void TheConstructorShouldSetPosition()
+        {
+            // Arrange
+            var value = "foo";
+            var type = TokenType.Identifier;
+            var position = 1;
+
+            // Act
+            var token = new Token(value, type, position);
+
+            // Assert
+            Assert.Equal(position, token.Position);
         }
     }
 }

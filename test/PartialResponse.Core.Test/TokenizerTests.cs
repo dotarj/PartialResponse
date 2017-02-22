@@ -327,5 +327,21 @@ namespace PartialResponse.Core.Test
             // Assert
             Assert.Equal(TokenType.Identifier, token.Type);
         }
+
+        [Fact]
+        public void TheNextTokenMethodShouldReturnTokenPosition()
+        {
+            // Arrange
+            var reader = new StringReader("foo/");
+            var tokenizer = new Tokenizer(reader);
+
+            tokenizer.NextToken();
+
+            // Act
+            var token = tokenizer.NextToken();
+
+            // Assert
+            Assert.Equal(3, token.Position);
+        }
     }
 }
