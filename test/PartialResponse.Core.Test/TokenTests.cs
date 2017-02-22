@@ -6,17 +6,6 @@ namespace PartialResponse.Core.Test
     public class TokenTests
     {
         [Fact]
-        public void TheConstructorShouldThrowIfValueIsNull()
-        {
-            // Arrange
-            string value = null;
-            var type = TokenType.Identifier;
-
-            // Act
-            Assert.Throws<ArgumentNullException>("value", () => new Token(value, type));
-        }
-
-        [Fact]
         public void TheConstructorShouldSetValue()
         {
             // Arrange

@@ -193,7 +193,7 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
-        public void TheNextTokenMethodShouldReturnNullIfEndReached()
+        public void TheNextTokenMethodShouldReturnTokenTypeEofIfEndReached()
         {
             // Arrange
             var reader = new StringReader("foo");
@@ -205,7 +205,7 @@ namespace PartialResponse.Core.Test
             var token = tokenizer.NextToken();
 
             // Assert
-            Assert.Null(token);
+            Assert.Equal(TokenType.Eof, token.Type);
         }
 
         [Fact]

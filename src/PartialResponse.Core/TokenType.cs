@@ -40,6 +40,11 @@ namespace PartialResponse.Core
         /// A space, horizontal tab, new line, or carriage return. Typically, a contiguous run of whitespace is a
         /// single whitespace token. For example, the two spaces in 'foo  bar' result in a single whitespace token.
         /// </summary>
-        WhiteSpace
+        WhiteSpace,
+
+        /// <summary>
+        /// The end of the source has been reached.
+        /// </summary>
+        Eof
     }
 }

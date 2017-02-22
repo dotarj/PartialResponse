@@ -29,6 +29,7 @@ namespace PartialResponse.Core
                 { TokenType.LeftParenthesis, this.HandleLeftParenthesis },
                 { TokenType.RightParenthesis, this.HandleRightParenthesis },
                 { TokenType.Comma, this.HandleComma },
+                { TokenType.Eof, this.HandleEof }
             };
         }
 
@@ -43,7 +44,7 @@ namespace PartialResponse.Core
 
         private void HandleIdentifier(bool acceptEnd)
         {
-            if (this.IsEndReached())
+            if (this.currentToken.Type == TokenType.Eof)
             {
                 if (!acceptEnd)
                 {
@@ -68,22 +69,6 @@ namespace PartialResponse.Core
             this.prefixes.Push(prefix);
 
             this.NextToken();
-
-            if (this.IsEndReached())
-            {
-                if (this.depth > 0)
-                {
-                    this.context.Error = "";
-                }
-                else
-                {
-                    var value = this.prefixes.Pop();
-
-                    this.context.Values.Add(new Field(value));
-                }
-
-                return;
-            }
 
             Action handler;
 
@@ -132,9 +117,9 @@ namespace PartialResponse.Core
 
                 this.NextToken();
             }
-            while (!this.IsEndReached() && this.currentToken.Type == TokenType.RightParenthesis);
+            while (this.currentToken.Type == TokenType.RightParenthesis);
 
-            if (!this.IsEndReached())
+            if (this.currentToken.Type != TokenType.Eof)
             {
                 if (this.currentToken.Type != TokenType.Comma)
                 {
@@ -159,17 +144,24 @@ namespace PartialResponse.Core
             this.HandleIdentifier(acceptEnd: false);
         }
 
+        private void HandleEof()
+        {
+            if (this.depth > 0)
+            {
+                this.context.Error = "";
+
+                return;
+            }
+
+            var value = this.prefixes.Pop();
+
+            this.context.Values.Add(new Field(value));
+        }
+
         private void NextToken()
         {
             while (true)
             {
-                if (this.tokenizer.IsEndReached())
-                {
-                    this.currentToken = null;
-
-                    return;
-                }
-
                 var token = this.tokenizer.NextToken();
 
                 if (token.Type != TokenType.WhiteSpace)
@@ -179,11 +171,6 @@ namespace PartialResponse.Core
                     return;
                 }
             }
-        }
-
-        private bool IsEndReached()
-        {
-            return this.currentToken == null;
         }
     }
 }

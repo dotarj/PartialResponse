@@ -1,7 +1,5 @@
 // Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-using System;
-
 namespace PartialResponse.Core
 {
     /// <summary>
@@ -18,11 +16,6 @@ namespace PartialResponse.Core
         /// <param name="type">The <see cref="TokenType"/> of the token.</param>
         public Token(string value, TokenType type)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
             this.Value = value;
             this.Type = type; 
         }
