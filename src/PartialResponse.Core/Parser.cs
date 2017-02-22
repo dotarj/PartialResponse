@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace PartialResponse.Core
 {
+    /// <summary>
+    /// A parser for fields parameter parsing.
+    /// </summary>
+    /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
+    /// from your code.</remarks>
     public class Parser
     {
         private readonly Stack<string> prefixes = new Stack<string>();
@@ -13,6 +18,10 @@ namespace PartialResponse.Core
         private Token currentToken;
         private int depth;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser"/> class.
+        /// </summary>
+        /// <param name="context">A <see cref="ParserContext"/> used by the parser.</param>
         public Parser(ParserContext context)
         {
             if (context == null)
@@ -33,6 +42,9 @@ namespace PartialResponse.Core
             };
         }
 
+        /// <summary>
+        /// Parses the specified value.
+        /// </summary>
         public void Parse()
         {
             // TODO: Reset stuff.
