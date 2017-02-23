@@ -58,12 +58,12 @@ namespace PartialResponse.Core
             {
                 if (!acceptEnd)
                 {
-                    this.context.Error = "";
+                    this.context.Error = new UnexpectedTokenError(this.currentToken);
                 }
 
                 if (this.depth > 0)
                 {
-                    this.context.Error = "";
+                    this.context.Error = new UnexpectedTokenError(this.currentToken);
                 }
 
                 return;
@@ -71,7 +71,7 @@ namespace PartialResponse.Core
 
             if (currentToken.Type != TokenType.Identifier)
             {
-                this.context.Error = "";
+                this.context.Error = new UnexpectedTokenError(this.currentToken);
             }
 
             var prefix = this.prefixes.Count > 0 ? $"{this.prefixes.Pop()}/{this.currentToken.Value}" : this.currentToken.Value;
@@ -84,7 +84,7 @@ namespace PartialResponse.Core
 
             if (!this.handlers.TryGetValue(this.currentToken.Type, out handler))
             {
-                this.context.Error = "";
+                this.context.Error = new UnexpectedTokenError(this.currentToken);
             }
 
             handler();
@@ -120,7 +120,7 @@ namespace PartialResponse.Core
 
                 if (this.depth < 0)
                 {
-                    this.context.Error = "";
+                    this.context.Error = new UnexpectedTokenError(this.currentToken);
 
                     return;
                 }
@@ -133,7 +133,7 @@ namespace PartialResponse.Core
             {
                 if (this.currentToken.Type != TokenType.Comma)
                 {
-                    this.context.Error = "";
+                    this.context.Error = new UnexpectedTokenError(this.currentToken);
 
                     return;
                 }
@@ -158,7 +158,7 @@ namespace PartialResponse.Core
         {
             if (this.depth > 0)
             {
-                this.context.Error = "";
+                this.context.Error = new UnexpectedTokenError(this.currentToken);
 
                 return;
             }

@@ -30,7 +30,7 @@ namespace PartialResponse.Core
         /// Gets the error that occured while parsing.
         /// </summary>
         /// <returns>The error if an error occured while parsing; otherwise, null.</returns>
-        public string Error { get; internal set; }
+        public UnexpectedTokenError Error { get; internal set; }
 
         /// <summary>
         /// Gets the <see cref="TextReader"/> representing the input string.
