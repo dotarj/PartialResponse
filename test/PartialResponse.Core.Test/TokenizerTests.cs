@@ -13,7 +13,7 @@ namespace PartialResponse.Core.Test
             TextReader reader = null;
 
             // Act
-            Assert.Throws<ArgumentNullException>("reader", () => new Tokenizer(reader));
+            Assert.Throws<ArgumentNullException>("source", () => new Tokenizer(reader));
         }
 
         [Fact]

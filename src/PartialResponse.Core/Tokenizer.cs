@@ -14,7 +14,7 @@ namespace PartialResponse.Core
     /// from your code.</remarks>
     public class Tokenizer
     {
-        private readonly TextReader reader;
+        private readonly TextReader source;
         private readonly StringBuilder buffer = new StringBuilder();
         private readonly Dictionary<char, TokenType> tokens = new Dictionary<char, TokenType>()
         {
@@ -29,15 +29,15 @@ namespace PartialResponse.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Tokenizer"/> class.
         /// </summary>
-        /// <param name="reader">A <see cref="TextReader"/> representing the input string.</param>
-        public Tokenizer(TextReader reader)
+        /// <param name="source">A <see cref="TextReader"/> representing the input string.</param>
+        public Tokenizer(TextReader source)
         {
-            if (reader == null)
+            if (source == null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(source));
             }
 
-            this.reader = reader;
+            this.source = source;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace PartialResponse.Core
 
             this.buffer.Append(this.GetCurrentCharacter());
 
-            this.reader.Read();
+            this.source.Read();
 
             this.position++;
         }
@@ -112,14 +112,14 @@ namespace PartialResponse.Core
 
         private char GetCurrentCharacter()
         {
-            var value = this.reader.Peek();
+            var value = this.source.Peek();
 
             return value == -1 ? '\0' : (char)value;
         }
 
         private bool IsEndReached()
         {
-            return this.reader.Peek() == -1;
+            return this.source.Peek() == -1;
         }
     }
 }
