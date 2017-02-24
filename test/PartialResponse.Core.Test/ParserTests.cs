@@ -32,11 +32,15 @@ namespace PartialResponse.Core.Test
             Assert.Empty(context.Values);
         }
 
-        [Fact]
-        public void TheParseMethodShouldSetErrorIfParenthesisNotClosed()
+        [Theory]
+        [InlineData("/", TokenType.ForwardSlash)]
+        [InlineData("(", TokenType.LeftParenthesis)]
+        [InlineData(")", TokenType.RightParenthesis)]
+        [InlineData(",", TokenType.Comma)]
+        public void TheParseMethodShouldSetErrorIfIllegalTokenAtStart(string value, TokenType tokenType)
         {
             // Arrange
-            var source = new StringReader("foo(bar");
+            var source = new StringReader(value);
             var context = new ParserContext(source);
             var parser = new Parser(context);
 
@@ -44,22 +48,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(TokenType.Eof, context.Error.Type);
-        }
-
-        [Fact]
-        public void TheParseMethodShouldSetErrorIfIdentifierExpected()
-        {
-            // Arrange
-            var source = new StringReader("/");
-            var context = new ParserContext(source);
-            var parser = new Parser(context);
-
-            // Act
-            parser.Parse();
-
-            // Assert
-            Assert.Equal(TokenType.ForwardSlash, context.Error.Type);
+            Assert.Equal(tokenType, context.Error.Type);
         }
 
         [Fact]
@@ -163,7 +152,52 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
-        public void TheParseMethodShouldSetErrorIfTooManyClosingParenthesis()
+        public void TheParseMethodShouldParseGroupedMultipleIdentifiers()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar,baz)");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar", "foo/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldParseGroupedNestedIdentifier()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar/baz)");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldSetErrorIfTooManyLeftParenthesis()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(TokenType.Eof, context.Error.Type);
+        }
+
+        [Fact]
+        public void TheParseMethodShouldSetErrorIfTooManyRightParenthesis()
         {
             // Arrange
             var source = new StringReader("foo(bar))");
@@ -175,6 +209,26 @@ namespace PartialResponse.Core.Test
 
             // Assert
             Assert.Equal(TokenType.RightParenthesis, context.Error.Type);
+        }
+
+        [Theory]
+        [InlineData("/", TokenType.ForwardSlash)]
+        [InlineData("(", TokenType.LeftParenthesis)]
+        [InlineData(")", TokenType.RightParenthesis)]
+        [InlineData(",", TokenType.Comma)]
+        [InlineData("", TokenType.Eof)]
+        public void TheParseMethodShouldSetErrorIfIllegalTokenAfterLeftParenthesis(string value, TokenType tokenType)
+        {
+            // Arrange
+            var source = new StringReader($"foo({value}");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(tokenType, context.Error.Type);
         }
 
         [Theory]
@@ -207,6 +261,36 @@ namespace PartialResponse.Core.Test
 
             // Assert
             Assert.Equal(new [] { "foo/bar", "baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldParseIdentifierAfterNestedGroupedIdentifiers()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar(baz)),qux");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldIgnoreSpace()
+        {
+            // Arrange
+            var source = new StringReader(" foo");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
     }
 }

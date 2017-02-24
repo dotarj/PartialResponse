@@ -73,6 +73,8 @@ namespace PartialResponse.Core
             if (currentToken.Type != TokenType.Identifier)
             {
                 this.context.Error = new UnexpectedTokenError(this.currentToken);
+
+                return;
             }
 
             var prefix = this.prefixes.Count > 0 ? $"{this.prefixes.Pop()}/{this.currentToken.Value}" : this.currentToken.Value;
@@ -86,6 +88,8 @@ namespace PartialResponse.Core
             if (!this.handlers.TryGetValue(this.currentToken.Type, out handler))
             {
                 this.context.Error = new UnexpectedTokenError(this.currentToken);
+
+                return;
             }
 
             handler();
