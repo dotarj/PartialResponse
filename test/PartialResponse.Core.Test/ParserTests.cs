@@ -292,5 +292,50 @@ namespace PartialResponse.Core.Test
             // Assert
             Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
+
+        [Fact]
+        public void TheParseMethodShouldIgnoreTab()
+        {
+            // Arrange
+            var source = new StringReader("\tfoo");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldIgnoreCarriageReturn()
+        {
+            // Arrange
+            var source = new StringReader("\rfoo");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldIgnoreNewLine()
+        {
+            // Arrange
+            var source = new StringReader("\nfoo");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
     }
 }

@@ -49,7 +49,6 @@ namespace PartialResponse.Core
         public void Parse()
         {
             this.NextToken();
-
             this.HandleIdentifier(acceptEnd: true);
         }
 
@@ -149,7 +148,6 @@ namespace PartialResponse.Core
                 this.prefixes.Pop();
 
                 this.NextToken();
-
                 this.HandleIdentifier(acceptEnd: false);
             }
         }
