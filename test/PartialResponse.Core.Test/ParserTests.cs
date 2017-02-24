@@ -193,5 +193,20 @@ namespace PartialResponse.Core.Test
             // Assert
             Assert.Equal(tokenType, context.Error.Type);
         }
+
+        [Fact]
+        public void TheParseMethodShouldParseIdentifierAfterGroupedIdentifier()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar),baz");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar", "baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
     }
 }

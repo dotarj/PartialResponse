@@ -16,6 +16,7 @@ namespace PartialResponse.Core
         private readonly Tokenizer tokenizer;
 
         private Token currentToken;
+        private Token previousToken;
         private int depth;
 
         /// <summary>
@@ -110,12 +111,15 @@ namespace PartialResponse.Core
 
         private void HandleRightParenthesis()
         {
-            var value = this.prefixes.Pop();
-
-            this.context.Values.Add(new Field(value));
-
             do
             {
+                var value = this.prefixes.Pop();
+
+                if (this.previousToken.Type == TokenType.Identifier)
+                {
+                    this.context.Values.Add(new Field(value));
+                }
+
                 this.depth--;
 
                 if (this.depth < 0)
@@ -137,6 +141,8 @@ namespace PartialResponse.Core
 
                     return;
                 }
+
+                this.prefixes.Pop();
 
                 this.NextToken();
 
@@ -170,6 +176,8 @@ namespace PartialResponse.Core
 
         private void NextToken()
         {
+            this.previousToken = this.currentToken;
+
             while (true)
             {
                 var token = this.tokenizer.NextToken();
