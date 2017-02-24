@@ -98,7 +98,7 @@ namespace PartialResponse.Core.Test
         [InlineData(")", TokenType.RightParenthesis)]
         [InlineData(",", TokenType.Comma)]
         [InlineData("", TokenType.Eof)]
-        public void TheParseMethodShouldParseSetErrorIfIllegalTokenAfterForwardSlash(string value, TokenType tokenType)
+        public void TheParseMethodShouldSetErrorIfIllegalTokenAfterForwardSlash(string value, TokenType tokenType)
         {
             // Arrange
             var source = new StringReader($"foo/{value}");
@@ -133,7 +133,7 @@ namespace PartialResponse.Core.Test
         [InlineData(")", TokenType.RightParenthesis)]
         [InlineData(",", TokenType.Comma)]
         [InlineData("", TokenType.Eof)]
-        public void TheParseMethodShouldParseSetErrorIfIllegalTokenAfterComma(string value, TokenType tokenType)
+        public void TheParseMethodShouldSetErrorIfIllegalTokenAfterComma(string value, TokenType tokenType)
         {
             // Arrange
             var source = new StringReader($"foo,{value}");
@@ -180,7 +180,7 @@ namespace PartialResponse.Core.Test
         [Theory]
         [InlineData("/", TokenType.ForwardSlash)]
         [InlineData("(", TokenType.LeftParenthesis)]
-        public void TheParseMethodShouldParseSetErrorIfIllegalTokenAfterRightParenthesis(string value, TokenType tokenType)
+        public void TheParseMethodShouldSetErrorIfIllegalTokenAfterRightParenthesis(string value, TokenType tokenType)
         {
             // Arrange
             var source = new StringReader($"foo(bar){value}");
