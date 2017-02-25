@@ -4,10 +4,19 @@ using System;
 
 namespace PartialResponse.Core
 {
+    /// <summary>
+    /// Represents a field.
+    /// </summary>
+    /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
+    /// from your code.</remarks>
     public class Field
     {
         private const string Wildcard = "*";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Field"/> class.
+        /// </summary>
+        /// <param name="value">The value of the field.</param>
         public Field(string value)
         {
             if (value == null)
@@ -18,13 +27,28 @@ namespace PartialResponse.Core
             this.Parts = value.Split('/');
         }
 
+        /// <summary>
+        /// Gets the value parts of the field.
+        /// </summary>
+        /// <returns>The value parts of the field.</returns>
         public string[] Parts { get; private set; }
 
+        /// <summary>
+        /// Indicates whether the field matches the specified value.
+        /// </summary>
+        /// <param name="value">The value to match.</param>
+        /// <returns>true if the field matches the specified value; otherwise, false.</returns>
         public bool Matches(string value)
         {
             return this.Matches(value, false);
         }
 
+        /// <summary>
+        /// Indicates whether the field matches the specified value.
+        /// </summary>
+        /// <param name="value">The value to match.</param>
+        /// <param name="ignoreCase">A value which indicates whether matching should be case-insensitive.</param>
+        /// <returns>true if the field matches the specified value; otherwise, false.</returns>
         public bool Matches(string value, bool ignoreCase)
         {
             if (value == null)
@@ -55,6 +79,10 @@ namespace PartialResponse.Core
             return true;
         }
 
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
             return string.Join("/", this.Parts);
