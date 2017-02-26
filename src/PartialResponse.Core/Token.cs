@@ -7,7 +7,7 @@ namespace PartialResponse.Core
     /// </summary>
     /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
     /// from your code.</remarks>
-    public class Token
+    public struct Token
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Token"/> class.
@@ -26,18 +26,18 @@ namespace PartialResponse.Core
         /// Gets the value of the token.
         /// </summary>
         /// <returns>The value of the token.</returns>
-        public string Value { get; private set; }
+        public string Value { get; }
 
         /// <summary>
         /// Gets the <see cref="TokenType"/> of the token.
         /// </summary>
         /// <returns>The <see cref="TokenType"/> of the token.</returns>
-        public TokenType Type { get; private set; }
+        public TokenType Type { get; }
 
         /// <summary>
         /// Gets the start position of the token.
         /// </summary>
         /// <returns>The start position of the token.</returns>
-        public int Position { get; private set; }
+        public int Position { get; }
     }
 }

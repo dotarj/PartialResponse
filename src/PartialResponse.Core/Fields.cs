@@ -13,8 +13,13 @@ namespace PartialResponse.Core
     /// </summary>
     /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
     /// from your code.</remarks>
-    public class Fields
+    public struct Fields
     {
+        /// <summary>
+        /// An empty instance of the <see cref="Fields"/> structure.
+        /// </summary>
+        public static Fields Empty = new Fields(new List<Field>());
+
         private Fields(List<Field> values)
         {
             this.Values = values.AsReadOnly();
@@ -24,7 +29,7 @@ namespace PartialResponse.Core
         /// Gets a collection containing the fields.
         /// </summary>
         /// <returns>A collection containing the fields</returns>
-        public ReadOnlyCollection<Field> Values { get; private set; }
+        public ReadOnlyCollection<Field> Values { get; }
 
         /// <summary>
         /// Indicates whether a field matches the specified value.
@@ -75,7 +80,7 @@ namespace PartialResponse.Core
 
                 if (context.Error != null)
                 {
-                    result = null;
+                    result = Fields.Empty;
 
                     return false;
                 }

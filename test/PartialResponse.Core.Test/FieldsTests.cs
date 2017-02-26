@@ -11,7 +11,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             string value = null;
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Assert.Throws<ArgumentNullException>(() => Fields.TryParse(value, out fields));
@@ -22,7 +22,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -36,7 +36,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             var result = Fields.TryParse(value, out fields);
@@ -50,7 +50,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             var result = Fields.TryParse(value, out fields);
@@ -64,7 +64,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -78,7 +78,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo,bar";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -92,7 +92,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar)";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -106,7 +106,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar,baz)";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -120,7 +120,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar(baz))";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -134,7 +134,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar(baz,qux))";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -148,7 +148,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo/bar";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -162,7 +162,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar/baz)";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -176,7 +176,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo(bar/baz,qux/quux)";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -190,7 +190,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -204,7 +204,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);
@@ -218,7 +218,7 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields = null;
+            Fields fields;
 
             // Act
             Fields.TryParse(value, out fields);

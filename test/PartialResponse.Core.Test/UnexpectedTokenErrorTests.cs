@@ -1,20 +1,9 @@
-using System;
 using Xunit;
 
 namespace PartialResponse.Core.Test
 {
     public class UnexpectedTokenErrorTests
     {
-        [Fact]
-        public void TheConstructorShouldThrowIfTokenIsNull()
-        {
-            // Arrange
-            Token token = null;
-
-            // Act
-            Assert.Throws<ArgumentNullException>("token", () => new UnexpectedTokenError(token));
-        }
-
         [Fact]
         public void TheConstructorShouldSetValue()
         {

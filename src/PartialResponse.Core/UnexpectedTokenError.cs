@@ -1,5 +1,3 @@
-using System;
-
 namespace PartialResponse.Core
 {
     /// <summary>
@@ -17,11 +15,6 @@ namespace PartialResponse.Core
         /// <param name="token">The unexpected token.</param>
         public UnexpectedTokenError(Token token)
         {
-            if (token == null)
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
-
             this.token = token;
         }
 

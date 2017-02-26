@@ -9,12 +9,12 @@ namespace PartialResponse.Core
     /// </summary>
     /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
     /// from your code.</remarks>
-    public class Field
+    public struct Field
     {
         private const string Wildcard = "*";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Field"/> class.
+        /// Initializes a new instance of the <see cref="Field"/> structure.
         /// </summary>
         /// <param name="value">The value of the field.</param>
         public Field(string value)
@@ -31,7 +31,7 @@ namespace PartialResponse.Core
         /// Gets the value parts of the field.
         /// </summary>
         /// <returns>The value parts of the field.</returns>
-        public string[] Parts { get; private set; }
+        public string[] Parts { get; }
 
         /// <summary>
         /// Indicates whether the field matches the specified value.
