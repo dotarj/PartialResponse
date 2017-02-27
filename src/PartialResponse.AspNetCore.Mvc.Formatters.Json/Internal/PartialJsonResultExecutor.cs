@@ -129,15 +129,24 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                     jsonWriter.CloseOutput = false;
 
                     var jsonSerializer = JsonSerializer.Create(serializerSettings);
-                    var fields = GetPartialResponseFields(context.HttpContext.Request);
+                    var request = context.HttpContext.Request;
 
-                    if (fields == null)
+                    if (request.Query.ContainsKey("fields"))
                     {
-                        jsonSerializer.Serialize(jsonWriter, result.Value);
+                        Fields fields;
+
+                        if (!this.TryGetFields(request, out fields))
+                        {
+                            response.StatusCode = 400;
+
+                            return TaskCache.CompletedTask;
+                        }
+
+                        PartialJsonUtilities.RemovePropertiesAndArrayElements(result.Value, jsonWriter, jsonSerializer, value => fields.Matches(value));
                     }
                     else
                     {
-                        PartialJsonUtilities.RemovePropertiesAndArrayElements(result.Value, jsonWriter, jsonSerializer, value => fields.Matches(value));
+                        jsonSerializer.Serialize(jsonWriter, result.Value);
                     }
                 }
             }
@@ -145,29 +154,16 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             return TaskCache.CompletedTask;
         }
 
-        private Fields GetPartialResponseFields(HttpRequest request)
+        private bool TryGetFields(HttpRequest request, out Fields fields)
         {
-            if (request == null)
+            var queryOption = request.Query["fields"].First();
+
+            if (!Fields.TryParse(queryOption, out fields))
             {
-                throw new ArgumentNullException("request");
+                return false;
             }
 
-            var queryOption = request.Query["fields"].FirstOrDefault();
-
-            if (queryOption != null)
-            {
-                Fields fields;
-
-                if (!Fields.TryParse(queryOption, out fields))
-                {
-                    // TODO: No more HttpResponseException in ASP.NET Core.
-                    throw new Exception();
-                }
-
-                return fields;
-            }
-
-            return null;
+            return true;
         }
     }
 }

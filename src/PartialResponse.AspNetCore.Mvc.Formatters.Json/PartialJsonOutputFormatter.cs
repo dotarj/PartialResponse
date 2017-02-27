@@ -100,37 +100,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         }
 
         /// <summary>
-        /// Gets a list of partial response fields for the current request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>A <see cref="System.Collections.ObjectModel.Collection{string}"/> that contains the specified fields for the
-        /// current request, or null if all fields should by serialized.</returns>
-        protected virtual Fields GetPartialResponseFields(HttpRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request");
-            }
-
-            var queryOption = request.Query["fields"].FirstOrDefault();
-
-            if (queryOption != null)
-            {
-                Fields fields;
-
-                if (!Fields.TryParse(queryOption, out fields))
-                {
-                    // TODO: No more HttpResponseException in ASP.NET Core.
-                    throw new Exception();
-                }
-
-                return fields;
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Returns a value that indicates whether partial response should be bypassed.
         /// </summary>
         /// <param name="request">The request.</param>
@@ -174,21 +143,24 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
                 using (var jsonWriter = CreateJsonWriter(writer))
                 {
                     var jsonSerializer = CreateJsonSerializer();
+                    var request = context.HttpContext.Request;
 
-                    Fields fields = null;
-
-                    if (!ShouldBypassPartialResponse(context.HttpContext.Request))
+                    if (!ShouldBypassPartialResponse(request) && request.Query.ContainsKey("fields"))
                     {
-                        fields = GetPartialResponseFields(context.HttpContext.Request);
-                    }
+                        Fields fields;
 
-                    if (fields == null)
-                    {
-                        jsonSerializer.Serialize(jsonWriter, context.Object);
+                        if (!this.TryGetFields(request, out fields))
+                        {
+                            response.StatusCode = 400;
+
+                            await writer.FlushAsync();
+                        }
+
+                        PartialJsonUtilities.RemovePropertiesAndArrayElements(context.Object, jsonWriter, jsonSerializer, value => fields.Matches(value));
                     }
                     else
                     {
-                        PartialJsonUtilities.RemovePropertiesAndArrayElements(context.Object, jsonWriter, jsonSerializer, value => fields.Matches(value));
+                        jsonSerializer.Serialize(jsonWriter, context.Object);
                     }
                 }
 
@@ -197,6 +169,18 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
                 // write).
                 await writer.FlushAsync();
             }
+        }
+
+        private bool TryGetFields(HttpRequest request, out Fields fields)
+        {
+            var queryOption = request.Query["fields"].First();
+
+            if (!Fields.TryParse(queryOption, out fields))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
