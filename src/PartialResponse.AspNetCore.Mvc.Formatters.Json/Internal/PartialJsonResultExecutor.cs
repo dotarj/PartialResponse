@@ -2,7 +2,6 @@
 
 using System;
 using System.Buffers;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -100,7 +99,17 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 throw new ArgumentNullException(nameof(result));
             }
 
+            var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
+
+            Fields? fields;
+
+            if (!request.TryGetFields(out fields))
+            {
+                response.StatusCode = 400;
+
+                return TaskCache.CompletedTask;
+            }
 
             string resolvedContentType = null;
             Encoding resolvedContentTypeEncoding = null;
@@ -129,20 +138,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                     jsonWriter.CloseOutput = false;
 
                     var jsonSerializer = JsonSerializer.Create(serializerSettings);
-                    var request = context.HttpContext.Request;
 
-                    if (request.Query.ContainsKey("fields"))
+                    if (fields.HasValue)
                     {
-                        Fields fields;
-
-                        if (!this.TryGetFields(request, out fields))
-                        {
-                            response.StatusCode = 400;
-
-                            return TaskCache.CompletedTask;
-                        }
-
-                        PartialJsonUtilities.RemovePropertiesAndArrayElements(result.Value, jsonWriter, jsonSerializer, value => fields.Matches(value));
+                        jsonSerializer.Serialize(jsonWriter, result.Value, path => fields.Value.Matches(path));
                     }
                     else
                     {
@@ -152,18 +151,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             }
 
             return TaskCache.CompletedTask;
-        }
-
-        private bool TryGetFields(HttpRequest request, out Fields fields)
-        {
-            var queryOption = request.Query["fields"].First();
-
-            if (!Fields.TryParse(queryOption, out fields))
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

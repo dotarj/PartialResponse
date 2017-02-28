@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace PartialResponse.Core
 {
-    public static class PartialJsonUtilities
+    public static class JsonSerializerExtensions
     {
-        public static void RemovePropertiesAndArrayElements(object value, JsonWriter jsonWriter, JsonSerializer jsonSerializer, Func<string, bool> shouldSerialize)
+        public static void Serialize(this JsonSerializer jsonSerializer, JsonWriter jsonWriter, object value, Func<string, bool> shouldSerialize)
         {
             if (value == null)
             {

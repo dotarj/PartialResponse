@@ -3,13 +3,12 @@
 using System;
 using System.Buffers;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Newtonsoft.Json;
 using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 using PartialResponse.Core;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters
@@ -99,31 +98,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             return _serializer;
         }
 
-        /// <summary>
-        /// Returns a value that indicates whether partial response should be bypassed.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>True if the partial response should be bypassed, otherwise false.</returns>
-        protected virtual bool ShouldBypassPartialResponse(HttpRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request");
-            }
-
-            if (request.GetBypassPartialResponse())
-            {
-                return true;
-            }
-
-            if (request.HttpContext != null)
-            {
-                return request.HttpContext.Response.StatusCode != 200;
-            }
-
-            return false;
-        }
-
         /// <inheritdoc />
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
@@ -137,32 +111,21 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
                 throw new ArgumentNullException(nameof(selectedEncoding));
             }
 
+            var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
+
+            Fields? fields;
+
+            if (!request.TryGetFields(out fields))
+            {
+                response.StatusCode = 400;
+
+                return;
+            }
+
             using (var writer = context.WriterFactory(response.Body, selectedEncoding))
             {
-                using (var jsonWriter = CreateJsonWriter(writer))
-                {
-                    var jsonSerializer = CreateJsonSerializer();
-                    var request = context.HttpContext.Request;
-
-                    if (!ShouldBypassPartialResponse(request) && request.Query.ContainsKey("fields"))
-                    {
-                        Fields fields;
-
-                        if (!this.TryGetFields(request, out fields))
-                        {
-                            response.StatusCode = 400;
-
-                            await writer.FlushAsync();
-                        }
-
-                        PartialJsonUtilities.RemovePropertiesAndArrayElements(context.Object, jsonWriter, jsonSerializer, value => fields.Matches(value));
-                    }
-                    else
-                    {
-                        jsonSerializer.Serialize(jsonWriter, context.Object);
-                    }
-                }
+                WriteObject(writer, context.Object, fields);
 
                 // Perf: call FlushAsync to call WriteAsync on the stream with any content left in the TextWriter's
                 // buffers. This is better than just letting dispose handle it (which would result in a synchronous
@@ -171,16 +134,21 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             }
         }
 
-        private bool TryGetFields(HttpRequest request, out Fields fields)
+        private void WriteObject(TextWriter writer, object value, Fields? fields)
         {
-            var queryOption = request.Query["fields"].First();
-
-            if (!Fields.TryParse(queryOption, out fields))
+            using (var jsonWriter = CreateJsonWriter(writer))
             {
-                return false;
-            }
+                var jsonSerializer = CreateJsonSerializer();
 
-            return true;
+                if (fields.HasValue)
+                {
+                    jsonSerializer.Serialize(jsonWriter, value, path => fields.Value.Matches(path));
+                }
+                else
+                {
+                    jsonSerializer.Serialize(jsonWriter, value);
+                }
+            }
         }
     }
 }

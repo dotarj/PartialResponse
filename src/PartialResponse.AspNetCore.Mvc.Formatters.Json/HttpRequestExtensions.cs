@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
 using System;
+using PartialResponse.Core;
 
 namespace Microsoft.AspNetCore.Http
 {
@@ -43,6 +44,29 @@ namespace Microsoft.AspNetCore.Http
             }
 
             return false;
+        }
+
+        internal static bool TryGetFields(this HttpRequest request, out Fields? result)
+        {
+            if (!request.Query.ContainsKey("fields"))
+            {
+                result = null;
+
+                return true;
+            }
+
+            Fields fields;
+
+            if (!Fields.TryParse(request.Query["fields"][0], out fields))
+            {
+                result = null;
+
+                return false;
+            }
+
+            result = fields;
+
+            return true;
         }
     }
 }
