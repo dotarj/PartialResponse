@@ -18,6 +18,8 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
     /// </summary>
     public class PartialJsonOutputFormatter : TextOutputFormatter
     {
+        internal const string BypassPartialResponseKey = "BypassPartialResponse";
+
         private readonly IArrayPool<char> _charPool;
         private readonly bool _ignoreCase;
 
@@ -101,6 +103,26 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             return _serializer;
         }
 
+        /// <summary>
+        /// Returns a value that indicates whether partial response should be bypassed for the current request.
+        /// </summary>
+        /// <param name="httpContext">The <see cref="HttpContext"/>.</param>
+        /// <returns>true if the partial response should be bypassed; otherwise, false.</returns>
+        protected virtual bool ShouldBypassPartialResponse(HttpContext httpContext)
+        {
+            if (httpContext == null)
+            {
+                throw new ArgumentNullException(nameof(httpContext));
+            }
+
+            if (httpContext.Items.ContainsKey(BypassPartialResponseKey))
+            {
+                return true;
+            }
+
+            return httpContext.Response.StatusCode != 200;
+        }
+
         /// <inheritdoc />
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
@@ -117,13 +139,16 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
 
-            Fields? fields;
+            Fields? fields = null;
 
-            if (!request.TryGetFields(out fields))
+            if (!this.ShouldBypassPartialResponse(context.HttpContext))
             {
-                response.StatusCode = 400;
+                if (!request.TryGetFields(out fields))
+                {
+                    response.StatusCode = 400;
 
-                return;
+                    return;
+                }
             }
 
             using (var writer = context.WriterFactory(response.Body, selectedEncoding))
