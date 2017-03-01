@@ -11,6 +11,11 @@ namespace PartialResponse.AspNetCore.Mvc
     public class MvcPartialJsonOptions
     {
         /// <summary>
+        /// Gets a value that indicates whether partial response allows case-insensitive matching.
+        /// </summary>
+        public bool IgnoreCase { get; set; }
+
+        /// <summary>
         /// Gets the <see cref="JsonSerializerSettings"/> that are used by this application.
         /// </summary>
         public JsonSerializerSettings SerializerSettings { get; } =

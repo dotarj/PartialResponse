@@ -141,7 +141,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 
                     if (fields.HasValue)
                     {
-                        jsonSerializer.Serialize(jsonWriter, result.Value, path => fields.Value.Matches(path));
+                        jsonSerializer.Serialize(jsonWriter, result.Value, path => fields.Value.Matches(path, this.Options.IgnoreCase));
                     }
                     else
                     {

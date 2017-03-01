@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
@@ -19,7 +18,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
     public class MvcPartialJsonMvcOptionsSetup : IConfigureOptions<MvcOptions>
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly JsonSerializerSettings _jsonSerializerSettings;
+        private readonly MvcPartialJsonOptions _partialJsonOptions;
         private readonly ArrayPool<char> _charPool;
         private readonly ObjectPoolProvider _objectPoolProvider;
 
@@ -50,14 +49,14 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             }
 
             _loggerFactory = loggerFactory;
-            _jsonSerializerSettings = partialJsonOptions.Value.SerializerSettings;
+            _partialJsonOptions = partialJsonOptions.Value;
             _charPool = charPool;
             _objectPoolProvider = objectPoolProvider;
         }
 
         public void Configure(MvcOptions options)
         {
-            options.OutputFormatters.Add(new PartialJsonOutputFormatter(_jsonSerializerSettings, _charPool));
+            options.OutputFormatters.Add(new PartialJsonOutputFormatter(_partialJsonOptions.SerializerSettings, _charPool, _partialJsonOptions.IgnoreCase));
 
             // TODO: Remove?
             options.FormatterMappings.SetMediaTypeMappingForFormat("json", MediaTypeHeaderValue.Parse("application/json"));

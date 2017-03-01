@@ -19,6 +19,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
     public class PartialJsonOutputFormatter : TextOutputFormatter
     {
         private readonly IArrayPool<char> _charPool;
+        private readonly bool _ignoreCase;
 
         // Perf: JsonSerializers are relatively expensive to create, and are thread safe. We cache
         // the serializer and invalidate it when the settings change.
@@ -33,7 +34,8 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         /// <see cref="JsonSerializerSettingsProvider.CreateSerializerSettings"/> initially returned.
         /// </param>
         /// <param name="charPool">The <see cref="ArrayPool{Char}"/>.</param>
-        public PartialJsonOutputFormatter(JsonSerializerSettings serializerSettings, ArrayPool<char> charPool)
+        /// <param name="ignoreCase">A value that indicates whether partial response allows case-insensitive matching.</param>
+        public PartialJsonOutputFormatter(JsonSerializerSettings serializerSettings, ArrayPool<char> charPool, bool ignoreCase)
         {
             if (serializerSettings == null)
             {
@@ -47,6 +49,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
 
             SerializerSettings = serializerSettings;
             _charPool = new JsonArrayPool<char>(charPool);
+            _ignoreCase = ignoreCase;
 
             SupportedEncodings.Add(Encoding.UTF8);
             SupportedEncodings.Add(Encoding.Unicode);
@@ -142,7 +145,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
 
                 if (fields.HasValue)
                 {
-                    jsonSerializer.Serialize(jsonWriter, value, path => fields.Value.Matches(path));
+                    jsonSerializer.Serialize(jsonWriter, value, path => fields.Value.Matches(path, _ignoreCase));
                 }
                 else
                 {
