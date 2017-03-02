@@ -1,0 +1,27 @@
+{
+  "packOptions": {
+    "summary": "Temporary placeholder, implementation will follow.",
+    "tags": [ "" ],
+    "owners": [ "dotarj" ],
+    "projectUrl": "https://github.com/dotarj/PartialResponse",
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/dotarj/PartialResponse"
+    }
+  },
+  "version": "0.0.0-alpha",
+  "authors": [ "Arjen Post" ],
+  "title": "PartialResponse.AspNetCore.Mvc.Formatters.Xml",
+  "description": "Temporary placeholder, implementation will follow.",
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.1"
+  },
+  "frameworks": {
+    "net451": {},
+    "netstandard1.6": {}
+  }
+}
