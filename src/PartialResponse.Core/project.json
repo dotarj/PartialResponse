@@ -7,8 +7,7 @@
     "warningsAsErrors": true
   },
   "dependencies": {
-    "NETStandard.Library": "1.6.1",
-    "Newtonsoft.Json": "9.0.1"
+    "NETStandard.Library": "1.6.1"
   },
   "frameworks": {
     "net451": {},

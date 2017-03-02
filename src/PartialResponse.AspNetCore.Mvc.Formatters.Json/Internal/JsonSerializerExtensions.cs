@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PartialResponse.Core
+namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 {
-    public static class JsonSerializerExtensions
+    internal static class JsonSerializerExtensions
     {
         public static void Serialize(this JsonSerializer jsonSerializer, JsonWriter jsonWriter, object value, Func<string, bool> shouldSerialize)
         {
@@ -75,7 +75,7 @@ namespace PartialResponse.Core
             @object.Properties()
                 .Where(property =>
                 {
-                    var path = PathUtilities.CombinePath(currentPath, property.Name);
+                    var path = CombinePath(currentPath, property.Name);
 
                     if (cache.ContainsKey(path))
                     {
@@ -96,7 +96,7 @@ namespace PartialResponse.Core
                 .ToList()
                 .ForEach(property =>
                 {
-                    var path = PathUtilities.CombinePath(currentPath, property.Name);
+                    var path = CombinePath(currentPath, property.Name);
 
                     RemoveObjectProperties((JObject)property.Value, path, shouldSerialize, cache);
                 });
@@ -106,7 +106,7 @@ namespace PartialResponse.Core
                 .ToList()
                 .ForEach(property =>
                 {
-                    var path = PathUtilities.CombinePath(currentPath, property.Name);
+                    var path = CombinePath(currentPath, property.Name);
 
                     RemoveArrayElements((JArray)property.Value, path, shouldSerialize, cache);
                 });
@@ -127,6 +127,16 @@ namespace PartialResponse.Core
                     @object.Remove();
                 }
             }
+        }
+
+        private static string CombinePath(string path, string name)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return name;
+            }
+
+            return string.Format("{0}/{1}", path, name);
         }
     }
 }
