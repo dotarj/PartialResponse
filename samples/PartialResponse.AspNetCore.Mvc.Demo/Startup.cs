@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PartialResponse.Extensions.DependencyInjection;
 
-namespace WebApplication
+namespace PartialResponse.AspNetCore.Mvc.Demo
 {
     public class Startup
     {
@@ -48,7 +48,7 @@ namespace WebApplication
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}");
             });
         }
     }

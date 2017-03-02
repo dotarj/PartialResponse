@@ -1,13 +1,13 @@
 using System.Collections.Generic ;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication.Controllers
+namespace PartialResponse.AspNetCore.Mvc.Demo.Controllers
 {
-    public class HomeController : Controller
+    public class FormatterController : Controller
     {
         public List<dynamic> Index()
         {
-            var response = new List<dynamic>()
+            return new List<dynamic>()
             {
                 new
                 {
@@ -37,8 +37,6 @@ namespace WebApplication.Controllers
                     }
                 }
             };
-
-            return response;
         }
     }
 }
