@@ -28,6 +28,10 @@ namespace PartialResponse.AspNetCore.Mvc.Demo
             services
                 .AddMvc(options => options.OutputFormatters.Clear())
                 .AddPartialJsonFormatters();
+
+            services.AddOptions();
+
+            services.Configure<MvcPartialJsonOptions>(Configuration.GetSection("PartialJson"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
