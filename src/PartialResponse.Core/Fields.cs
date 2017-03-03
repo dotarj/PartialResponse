@@ -54,7 +54,9 @@ namespace PartialResponse.Core
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return this.Values.Any(v => v.Matches(value, ignoreCase));
+            var parts = value.Split('/');
+
+            return this.Values.Any(v => v.Matches(parts, ignoreCase));
         }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches("bar");
+            var result = field.Matches(new [] { "bar" });
 
             // Assert
             Assert.False(result);
@@ -61,7 +61,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo/bar");
 
             // Act
-            var result = field.Matches("foo/baz");
+            var result = field.Matches(new [] { "foo", "baz" });
 
             // Assert
             Assert.False(result);
@@ -74,7 +74,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches("foo");
+            var result = field.Matches(new [] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -87,7 +87,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches("foo/bar");
+            var result = field.Matches(new [] { "foo", "bar" });
 
             // Assert
             Assert.True(result);
@@ -100,7 +100,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo/bar");
 
             // Act
-            var result = field.Matches("foo");
+            var result = field.Matches(new [] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -113,7 +113,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("*");
 
             // Act
-            var result = field.Matches("foo");
+            var result = field.Matches(new [] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -126,7 +126,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches("FOO", true);
+            var result = field.Matches(new [] { "FOO" }, true);
 
             // Assert
             Assert.True(result);

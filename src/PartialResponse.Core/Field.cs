@@ -36,28 +36,27 @@ namespace PartialResponse.Core
         /// <summary>
         /// Indicates whether the field matches the specified value.
         /// </summary>
-        /// <param name="value">The value to match.</param>
+        /// <param name="parts">The parts to match, which is an array whose elements contain the substrings from the value that are delimited by '/'.</param>
         /// <returns>true if the field matches the specified value; otherwise, false.</returns>
-        public bool Matches(string value)
+        public bool Matches(string[] parts)
         {
-            return this.Matches(value, false);
+            return this.Matches(parts, false);
         }
 
         /// <summary>
         /// Indicates whether the field matches the specified value.
         /// </summary>
-        /// <param name="value">The value to match.</param>
+        /// <param name="parts">The parts to match, which is an array whose elements contain the substrings from the value that are delimited by '/'.</param>
         /// <param name="ignoreCase">A value which indicates whether matching should be case-insensitive.</param>
         /// <returns>true if the field matches the specified value; otherwise, false.</returns>
-        public bool Matches(string value, bool ignoreCase)
+        public bool Matches(string[] parts, bool ignoreCase)
         {
-            if (value == null)
+            if (parts == null)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(parts));
             }
 
             var stringComparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-            var parts = value.Split('/');
 
             for (var index = 0; index < parts.Length && index < this.Parts.Length; index++)
             {
