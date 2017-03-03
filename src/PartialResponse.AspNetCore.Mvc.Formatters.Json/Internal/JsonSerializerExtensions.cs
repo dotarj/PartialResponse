@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 {
-    internal static class JsonSerializerExtensions
+    public static class JsonSerializerExtensions
     {
         public static void Serialize(this JsonSerializer jsonSerializer, JsonWriter jsonWriter, object value, Func<string, bool> shouldSerialize)
         {
