@@ -3,7 +3,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
@@ -18,13 +17,14 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             }
             else
             {
+                var context = new SerializerContext(shouldSerialize);
                 var token = JToken.FromObject(value, jsonSerializer);
 
                 var array = token as JArray;
 
                 if (array != null)
                 {
-                    RemoveArrayElements(array, null, shouldSerialize, new Dictionary<string, bool>());
+                    RemoveArrayElements(array, null, context);
 
                     array.WriteTo(jsonWriter);
                 }
@@ -34,7 +34,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 
                     if (@object != null)
                     {
-                        RemoveObjectProperties(@object, null, shouldSerialize, new Dictionary<string, bool>());
+                        RemoveObjectProperties(@object, null, context);
 
                         @object.WriteTo(jsonWriter);
                     }
@@ -46,11 +46,11 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             }
         }
 
-        private static void RemoveArrayElements(JArray array, string currentPath, Func<string, bool> shouldSerialize, Dictionary<string, bool> cache)
+        private static void RemoveArrayElements(JArray array, string currentPath, SerializerContext context)
         {
             array.OfType<JObject>()
                 .ToList()
-                .ForEach(childObject => RemoveObjectProperties(childObject, currentPath, shouldSerialize, cache));
+                .ForEach(childObject => RemoveObjectProperties(childObject, currentPath, context));
 
             RemoveArrayIfEmpty(array);
         }
@@ -70,23 +70,14 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             }
         }
 
-        private static void RemoveObjectProperties(JObject @object, string currentPath, Func<string, bool> shouldSerialize, Dictionary<string, bool> cache)
+        private static void RemoveObjectProperties(JObject @object, string currentPath, SerializerContext context)
         {
             @object.Properties()
                 .Where(property =>
                 {
                     var path = CombinePath(currentPath, property.Name);
 
-                    if (cache.ContainsKey(path))
-                    {
-                        return cache[path];
-                    }
-
-                    var result = !shouldSerialize(path);
-
-                    cache.Add(path, result);
-
-                    return result;
+                    return context.ShouldSerialize(path);
                 })
                 .ToList()
                 .ForEach(property => property.Remove());
@@ -98,7 +89,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 {
                     var path = CombinePath(currentPath, property.Name);
 
-                    RemoveObjectProperties((JObject)property.Value, path, shouldSerialize, cache);
+                    RemoveObjectProperties((JObject)property.Value, path, context);
                 });
 
             @object.Properties()
@@ -108,7 +99,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 {
                     var path = CombinePath(currentPath, property.Name);
 
-                    RemoveArrayElements((JArray)property.Value, path, shouldSerialize, cache);
+                    RemoveArrayElements((JArray)property.Value, path, context);
                 });
 
             RemoveObjectIfEmpty(@object);
