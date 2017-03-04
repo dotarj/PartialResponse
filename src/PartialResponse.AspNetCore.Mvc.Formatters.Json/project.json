@@ -10,7 +10,7 @@
       "url": "git://github.com/dotarj/PartialResponse"
     }
   },
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta2",
   "authors": [ "Arjen Post" ],
   "title": "PartialResponse.AspNetCore.Mvc.Formatters.Json",
   "description": "ASP.NET Core MVC formatter for partial response (fields) JSON output.",
