@@ -17,6 +17,16 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
+        public void TheValuesPropertyShouldReturnEmptyValuesIfDefault()
+        {
+            // Arrange
+            var fields = default(Fields);
+
+            // Assert
+            Assert.Empty(fields.Values);
+        }
+
+        [Fact]
         public void TheMatchesMethodShouldReturnFalseForDifferentValues()
         {
             // Arrange

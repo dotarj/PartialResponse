@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -15,21 +14,21 @@ namespace PartialResponse.Core
     /// from your code.</remarks>
     public struct Fields
     {
-        /// <summary>
-        /// An empty instance of the <see cref="Fields"/> structure.
-        /// </summary>
-        public static Fields Empty = new Fields(new List<Field>());
+        private IEnumerable<Field> values;
 
-        private Fields(List<Field> values)
+        private Fields(IEnumerable<Field> values)
         {
-            this.Values = values.AsReadOnly();
+            this.values = values;
         }
 
         /// <summary>
         /// Gets a collection containing the fields.
         /// </summary>
         /// <returns>A collection containing the fields</returns>
-        public ReadOnlyCollection<Field> Values { get; }
+        public IEnumerable<Field> Values
+        {
+            get { return this.values ?? Enumerable.Empty<Field>(); }
+        }
 
         /// <summary>
         /// Indicates whether a field matches the specified value.
@@ -56,7 +55,7 @@ namespace PartialResponse.Core
 
             var parts = value.Split('/');
 
-            return this.Values.Any(v => v.Matches(parts, ignoreCase));
+            return this.Values.Any(field => field.Matches(parts, ignoreCase));
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace PartialResponse.Core
 
                 if (context.Error != null)
                 {
-                    result = Fields.Empty;
+                    result = default(Fields);
 
                     return false;
                 }
