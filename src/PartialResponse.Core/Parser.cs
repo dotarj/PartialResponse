@@ -76,7 +76,18 @@ namespace PartialResponse.Core
                 return;
             }
 
-            var prefix = this.prefixes.Count > 0 ? $"{this.prefixes.Pop()}/{this.currentToken.Value}" : this.currentToken.Value;
+            string prefix;
+
+            if (this.prefixes.Count > 0)
+            {
+                var previousPrefix = depth > 0 && this.previousToken.Type != TokenType.ForwardSlash ? this.prefixes.Peek() : this.prefixes.Pop();
+
+                prefix = $"{previousPrefix}/{this.currentToken.Value}";
+            }
+            else
+            {
+                prefix = this.currentToken.Value;
+            }
 
             this.prefixes.Push(prefix);
 
@@ -103,10 +114,6 @@ namespace PartialResponse.Core
         private void HandleLeftParenthesis()
         {
             this.depth++;
-
-            var value = this.prefixes.Peek();
-
-            this.prefixes.Push(value);
 
             this.NextToken();
             this.HandleIdentifier(acceptEnd: false);

@@ -167,6 +167,21 @@ namespace PartialResponse.Core.Test
         }
 
         [Fact]
+        public void TheParseMethodShouldParseIdentifierAfterGroupedMultipleIdentifiers()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar,baz),qux");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar", "foo/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
         public void TheParseMethodShouldParseGroupedNestedIdentifier()
         {
             // Arrange
@@ -179,6 +194,21 @@ namespace PartialResponse.Core.Test
 
             // Assert
             Assert.Equal(new [] { "foo/bar/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+        }
+
+        [Fact]
+        public void TheParseMethodShouldParseGroupedMultipleNestedIdentifier()
+        {
+            // Arrange
+            var source = new StringReader("foo(bar/baz,qux/quux)");
+            var context = new ParserContext(source);
+            var parser = new Parser(context);
+
+            // Act
+            parser.Parse();
+
+            // Assert
+            Assert.Equal(new [] { "foo/bar/baz", "foo/qux/quux" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
