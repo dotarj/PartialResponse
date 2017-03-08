@@ -18,11 +18,18 @@
     "warningsAsErrors": true
   },
   "dependencies": {
+    "PartialResponse.Core": {
+      "target": "project"
+    },
     "Microsoft.AspNet.WebApi.Client": "5.0.0",
     "Microsoft.AspNet.WebApi.Core": "5.0.0",
     "Newtonsoft.Json": "4.5.11"
   },
   "frameworks": {
-    "net45": {}
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Web": "4.0.0"
+      }
+    }
   }
 }
