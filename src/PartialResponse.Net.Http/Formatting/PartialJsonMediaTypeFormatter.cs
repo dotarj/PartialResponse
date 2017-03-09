@@ -403,7 +403,7 @@ namespace PartialResponse.Net.Http.Formatting
                 }
                 else
                 {
-                    PartialJsonMediaTypeFormatterUtilities.RemovePropertiesAndArrayElements(value, jsonTextWriter, jsonSerializer, ShouldSerialize);
+                    jsonSerializer.Serialize(jsonTextWriter, value, ShouldSerialize);
                 }
 
                 jsonTextWriter.Flush();

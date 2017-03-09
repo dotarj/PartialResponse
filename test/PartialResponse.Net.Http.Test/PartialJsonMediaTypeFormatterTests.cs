@@ -11,16 +11,16 @@ using PartialResponse.Net.Http.Formatting;
 using Xunit;
 
 
-namespace PartialResponse.Test
+namespace PartialResponse.Net.Http.Test
 {
-    public class JsonMediaTypeFormatterTests
+    public class PartialJsonMediaTypeFormatterTests
     {
         private readonly PartialJsonMediaTypeFormatter formatter;
         private readonly HttpRequestMessage httpRequest = new HttpRequestMessage();
         private readonly HttpResponseBase httpResponse = Mock.Of<HttpResponseBase>();
         private readonly HttpContextBase httpContext = Mock.Of<HttpContextBase>();
 
-        public JsonMediaTypeFormatterTests()
+        public PartialJsonMediaTypeFormatterTests()
         {
             Mock.Get(this.httpContext)
                 .SetupGet(context => context.Response)
