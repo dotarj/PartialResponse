@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Partial response (fields) core components.</Description>
+    <AssemblyTitle>PartialResponse.Core</AssemblyTitle>
+    <VersionPrefix>1.0.0-beta</VersionPrefix>
+    <Authors>Arjen Post</Authors>
+    <TargetFrameworks>net45;net451;netstandard1.6</TargetFrameworks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>PartialResponse.Core</AssemblyName>
+    <PackageId>PartialResponse.Core</PackageId>
+    <PackageTags>partial;response;partialresponse;fields</PackageTags>
+    <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>
