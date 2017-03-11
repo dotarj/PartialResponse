@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace PartialResponse.Demo
+namespace PartialResponse.Net.Http.Demo
 {
     public class GamesController : ApiController
     {

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net45</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PartialResponse.Net.Http\PartialResponse.Net.Http.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="4.5.11" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Net.Http.Formatting" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
+</Project>
