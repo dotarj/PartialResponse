@@ -2,8 +2,6 @@
 
 using Owin; 
 using PartialResponse.Net.Http.Formatting;
-using System;
-using System.Web;
 using System.Web.Http;
 
 namespace PartialResponse.Net.Http.Demo
