@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace PartialResponse.Demo
+namespace PartialResponse.Net.Http.Demo
 {
     public class Publisher
     {
