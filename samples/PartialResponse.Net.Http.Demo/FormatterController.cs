@@ -7,7 +7,7 @@ namespace PartialResponse.Net.Http.Demo
 {
     public class FormatterController : ApiController
     {
-        public List<dynamic> Index()
+        public List<dynamic> Get()
         {
             return new List<dynamic>()
             {
