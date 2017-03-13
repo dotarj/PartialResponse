@@ -8,7 +8,7 @@ namespace PartialResponse.Net.Http.Demo
 {
     public class Startup 
     {
-        public void Configuration(IAppBuilder appBuilder) 
+        public void Configuration(IAppBuilder appBuilder)
         { 
             var configuration = new HttpConfiguration();
             
@@ -16,7 +16,7 @@ namespace PartialResponse.Net.Http.Demo
             configuration.Formatters.Add(new PartialJsonMediaTypeFormatter() { IgnoreCase = true });
             configuration.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional }); 
 
-            appBuilder.UseWebApi(configuration); 
+            appBuilder.Use<HttpResponseExceptionMiddleware>().UseWebApi(configuration);
         } 
     } 
 }
