@@ -5,6 +5,7 @@
     <AssemblyTitle>PartialResponse.Net.Http</AssemblyTitle>
     <Authors>Arjen Post</Authors>
     <TargetFramework>net45</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse.Net.Http</AssemblyName>
     <PackageId>PartialResponse.Net.Http</PackageId>

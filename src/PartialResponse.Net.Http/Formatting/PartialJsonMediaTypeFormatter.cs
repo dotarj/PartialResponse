@@ -337,7 +337,6 @@ namespace PartialResponse.Net.Http.Formatting
         /// Returns a value that indicates whether the field should be serialized.
         /// </summary>
         /// <param name="field">The field.</param>
-        /// <param name="tokenType">The type.</param>
         /// <returns>True if the value should be serialized, otherwise false.</returns>
         protected virtual bool ShouldSerialize(string field)
         {

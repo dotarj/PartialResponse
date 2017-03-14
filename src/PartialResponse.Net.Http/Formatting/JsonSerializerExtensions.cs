@@ -10,7 +10,7 @@ namespace PartialResponse.Net.Http.Formatting
     /// <summary>
     /// Provides a method for serializing objects to JSON.
     /// </summary>
-    /// <remarks>This type supports the <see cref="Fields"/> infrastructure and is not intended to be used directly
+    /// <remarks>This type supports the <see cref="PartialResponse.Core.Fields"/> infrastructure and is not intended to be used directly
     /// from your code.</remarks>
     public static class JsonSerializerExtensions
     {
@@ -21,7 +21,7 @@ namespace PartialResponse.Net.Http.Formatting
         /// <param name="jsonSerializer">The <see cref="JsonSerializer"/> used to serialize the specified <see cref="Object"/>.</param>
         /// <param name="jsonWriter">The <see cref="JsonWriter"/> used to write the JSON structure.</param>
         /// <param name="value">The <see cref="Object"/> to serialize.</param>
-        /// <param name="shouldSerialize">A <see cref="Func{string, bool}"/> that is called for every field in the
+        /// <param name="shouldSerialize">A <see cref="Func{T, TResult}"/> that is called for every field in the
         /// <see cref="Object"/> to serialize, indicating whether the field should be serialized.</param>
         public static void Serialize(this JsonSerializer jsonSerializer, JsonWriter jsonWriter, object value, Func<string, bool> shouldSerialize)
         {

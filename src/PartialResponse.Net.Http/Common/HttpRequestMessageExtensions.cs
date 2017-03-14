@@ -5,6 +5,9 @@ using System.Web;
 
 namespace System.Net.Http
 {
+    /// <summary>
+    /// Provides a method for bypassing partial response.
+    /// </summary>
     public static class HttpRequestMessageExtensions
     {
         /// <summary>
