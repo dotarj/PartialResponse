@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Microsoft ASP.NET Web API Partial Response</Description>
+    <Description>ASP.NET Web API formatter for partial response (fields) JSON output.</Description>
     <AssemblyTitle>PartialResponse.Net.Http</AssemblyTitle>
     <Authors>Arjen Post</Authors>
     <TargetFramework>net45</TargetFramework>
@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse.Net.Http</AssemblyName>
     <PackageId>PartialResponse.Net.Http</PackageId>
-    <PackageTags>AspNet;WebApi;AspNetWebApi;Web;Api;Partial;Response;PartialResponse;Fields</PackageTags>
+    <PackageTags>aspnet;webapi;aspnetwebapi;web;api;json;partial;response;partialresponse;fields</PackageTags>
     <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
