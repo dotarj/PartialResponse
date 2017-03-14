@@ -6,6 +6,7 @@
     <VersionPrefix>0.0.0-alpha</VersionPrefix>
     <Authors>Arjen Post</Authors>
     <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse.AspNetCore.Mvc.Formatters.Yaml</AssemblyName>
     <PackageId>PartialResponse.AspNetCore.Mvc.Formatters.Yaml</PackageId>

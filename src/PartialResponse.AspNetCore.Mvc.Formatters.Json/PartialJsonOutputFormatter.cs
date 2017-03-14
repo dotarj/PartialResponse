@@ -32,7 +32,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         /// </summary>
         /// <param name="serializerSettings">
         /// The <see cref="JsonSerializerSettings"/>. Should be either the application-wide settings
-        /// (<see cref="MvcJsonOptions.SerializerSettings"/>) or an instance
+        /// (<see cref="MvcPartialJsonOptions.SerializerSettings"/>) or an instance
         /// <see cref="JsonSerializerSettingsProvider.CreateSerializerSettings"/> initially returned.
         /// </param>
         /// <param name="charPool">The <see cref="ArrayPool{Char}"/>.</param>

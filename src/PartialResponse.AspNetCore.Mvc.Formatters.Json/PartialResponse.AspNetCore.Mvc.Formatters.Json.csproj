@@ -6,6 +6,8 @@
     <VersionPrefix>1.0.0-beta2</VersionPrefix>
     <Authors>Arjen Post</Authors>
     <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse.AspNetCore.Mvc.Formatters.Json</AssemblyName>
     <PackageId>PartialResponse.AspNetCore.Mvc.Formatters.Json</PackageId>
