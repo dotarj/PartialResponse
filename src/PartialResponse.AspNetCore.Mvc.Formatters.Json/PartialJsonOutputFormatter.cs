@@ -103,26 +103,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
             return _serializer;
         }
 
-        /// <summary>
-        /// Returns a value that indicates whether partial response should be bypassed for the current request.
-        /// </summary>
-        /// <param name="httpContext">The <see cref="HttpContext"/>.</param>
-        /// <returns>true if the partial response should be bypassed; otherwise, false.</returns>
-        protected virtual bool ShouldBypassPartialResponse(HttpContext httpContext)
-        {
-            if (httpContext == null)
-            {
-                throw new ArgumentNullException(nameof(httpContext));
-            }
-
-            if (httpContext.Items.ContainsKey(BypassPartialResponseKey))
-            {
-                return true;
-            }
-
-            return httpContext.Response.StatusCode != 200;
-        }
-
         /// <inheritdoc />
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
@@ -160,6 +140,16 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
                 // write).
                 await writer.FlushAsync();
             }
+        }
+
+        private bool ShouldBypassPartialResponse(HttpContext httpContext)
+        {
+            if (httpContext.Items.ContainsKey(BypassPartialResponseKey))
+            {
+                return true;
+            }
+
+            return httpContext.Response.StatusCode != 200;
         }
 
         private void WriteObject(TextWriter writer, object value, Fields? fields)
