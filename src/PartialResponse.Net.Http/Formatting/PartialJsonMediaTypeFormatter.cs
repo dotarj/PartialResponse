@@ -3,19 +3,17 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using PartialResponse.Core;
 
 namespace PartialResponse.Net.Http.Formatting
 {
@@ -28,7 +26,7 @@ namespace PartialResponse.Net.Http.Formatting
 
         private JsonSerializerSettings _jsonSerializerSettings;
         private int _maxDepth = FormattingUtilities.DefaultMaxDepth;
-        private Collection<string> _fields;
+        private Fields? _fields;
 
 #if !NETFX_CORE // DataContractJsonSerializer and DataContractResolver are not supported in the portable library version.
         private readonly IContractResolver _defaultContractResolver;
@@ -314,24 +312,13 @@ namespace PartialResponse.Net.Http.Formatting
             }
         }
 
-        /// <summary>
-        /// Gets a list of partial response fields for the current request.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>A <see cref="System.Collections.ObjectModel.Collection{string}"/> that contains the specified fields for the 
-        /// current request, or null if all fields should by serialized.</returns>
-        protected virtual Collection<string> GetPartialResponseFields(HttpRequestMessage request)
+        private Fields? GetPartialResponseFields(HttpRequestMessage request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request");
-            }
-
             var queryOption = HttpUtility.ParseQueryString(request.RequestUri.Query)["fields"];
 
             if (queryOption != null)
             {
-                Collection<string> fields;
+                Fields fields;
 
                 if (!Fields.TryParse(queryOption, out fields))
                 {
@@ -350,7 +337,6 @@ namespace PartialResponse.Net.Http.Formatting
         /// Returns a value that indicates whether the field should be serialized.
         /// </summary>
         /// <param name="field">The field.</param>
-        /// <param name="tokenType">The type.</param>
         /// <returns>True if the value should be serialized, otherwise false.</returns>
         protected virtual bool ShouldSerialize(string field)
         {
@@ -359,15 +345,7 @@ namespace PartialResponse.Net.Http.Formatting
                 throw new ArgumentNullException("field");
             }
 
-            var pattern = PartialJsonMediaTypeFormatterUtilities.GetRegexPatternForField(field);
-            var regexOptions = RegexOptions.None;
-
-            if (IgnoreCase)
-            {
-                regexOptions = RegexOptions.IgnoreCase;
-            }
-
-            return _fields.Any(f => Regex.IsMatch(f, pattern, regexOptions));
+            return _fields.HasValue ? _fields.Value.Matches(field, IgnoreCase) : true;
         }
 
         /// <summary>
@@ -407,6 +385,7 @@ namespace PartialResponse.Net.Http.Formatting
                 {
                     jsonTextWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
                 }
+
                 JsonSerializer jsonSerializer = JsonSerializer.Create(_jsonSerializerSettings);
 
                 if (!ShouldBypassPartialResponse(_request))
@@ -420,7 +399,7 @@ namespace PartialResponse.Net.Http.Formatting
                 }
                 else
                 {
-                    PartialJsonMediaTypeFormatterUtilities.RemovePropertiesAndArrayElements(value, jsonTextWriter, jsonSerializer, ShouldSerialize);
+                    jsonSerializer.Serialize(jsonTextWriter, value, ShouldSerialize);
                 }
 
                 jsonTextWriter.Flush();

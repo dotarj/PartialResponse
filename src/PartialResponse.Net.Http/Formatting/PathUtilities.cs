@@ -1,4 +1,4 @@
-﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
 namespace PartialResponse.Net.Http.Formatting
 {
