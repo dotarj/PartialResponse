@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Temporary placeholder, implementation will follow.</Description>
+    <AssemblyTitle>PartialResponse.AspNetCore.Mvc.Formatters.Xml</AssemblyTitle>
+    <VersionPrefix>0.0.0-alpha</VersionPrefix>
+    <Authors>Arjen Post</Authors>
+    <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>PartialResponse.AspNetCore.Mvc.Formatters.Xml</AssemblyName>
+    <PackageId>PartialResponse.AspNetCore.Mvc.Formatters.Xml</PackageId>
+    <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>
