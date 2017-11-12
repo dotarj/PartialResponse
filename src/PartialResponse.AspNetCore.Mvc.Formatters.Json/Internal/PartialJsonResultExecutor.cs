@@ -108,7 +108,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
             {
                 response.StatusCode = 400;
 
-                return TaskCache.CompletedTask;
+                return Task.CompletedTask;
             }
 
             string resolvedContentType = null;
@@ -150,7 +150,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 }
             }
 
-            return TaskCache.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }
