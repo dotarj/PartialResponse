@@ -16,6 +16,9 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../PartialResponse.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
 </Project>
