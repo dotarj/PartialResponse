@@ -388,7 +388,7 @@ namespace PartialResponse.Net.Http.Formatting
 
                 JsonSerializer jsonSerializer = JsonSerializer.Create(_jsonSerializerSettings);
 
-                if (!ShouldBypassPartialResponse(_request))
+                if (_request != null && !ShouldBypassPartialResponse(_request))
                 {
                     _fields = GetPartialResponseFields(_request);
                 }

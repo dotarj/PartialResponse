@@ -179,6 +179,23 @@ namespace PartialResponse.Net.Http.Test
             Assert.Equal("{\"foo\":\"bar\"}", body);
         }
 
+        [Fact]
+        public async Task TheWriteToStreamAsyncMethodShouldAcceptNullRequest()
+        {
+            // Arrange
+            var formatter = new PartialJsonMediaTypeFormatter();
+
+            Mock.Get(this.httpResponse)
+                .SetupGet(httpResponse => httpResponse.StatusCode)
+                .Returns(200);
+
+            // Act
+            using (var memoryStream = new MemoryStream())
+            {
+                await formatter.WriteToStreamAsync(typeof(object), new { }, memoryStream, null, null);
+            }
+        }
+
         private async Task<string> WriteAsync(object value)
         {
             using (var memoryStream = new MemoryStream())
