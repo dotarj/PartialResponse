@@ -17,17 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.AspNetCore.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.AspNetCore.Mvc.Formatters.Yaml", "src\PartialResponse.AspNetCore.Mvc.Formatters.Yaml\PartialResponse.AspNetCore.Mvc.Formatters.Yaml.csproj", "{7766BEE6-5E5C-4F3A-B38B-7C83EDFFE6FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Net.Http", "src\PartialResponse.Net.Http\PartialResponse.Net.Http.csproj", "{2424F14B-F883-4187-9657-228DC3D4EEC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse", "src\PartialResponse\PartialResponse.csproj", "{2424F14B-F883-4187-9657-228DC3D4EEC1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Core.Test", "test\PartialResponse.Core.Test\PartialResponse.Core.Test.csproj", "{AD41B46B-0017-4DED-BB5B-6E71ED286341}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.AspNetCore.Mvc.Formatters.Json.Test", "test\PartialResponse.AspNetCore.Mvc.Formatters.Json.Test\PartialResponse.AspNetCore.Mvc.Formatters.Json.Test.csproj", "{2F881047-13F4-42B1-923D-CA7C3A7705F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Net.Http.Test", "test\PartialResponse.Net.Http.Test\PartialResponse.Net.Http.Test.csproj", "{6EF4E789-BD67-47ED-AD07-8921A6C7AAD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Test", "test\PartialResponse.Test\PartialResponse.Test.csproj", "{6EF4E789-BD67-47ED-AD07-8921A6C7AAD4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.AspNetCore.Mvc.Demo", "samples\PartialResponse.AspNetCore.Mvc.Demo\PartialResponse.AspNetCore.Mvc.Demo.csproj", "{5584F88D-BF00-41FB-B6D1-51C094AEABDA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Net.Http.Demo", "samples\PartialResponse.Net.Http.Demo\PartialResponse.Net.Http.Demo.csproj", "{64AFFB63-CD64-4D2A-8BC6-AC6BF248723C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Demo", "samples\PartialResponse.Demo\PartialResponse.Demo.csproj", "{64AFFB63-CD64-4D2A-8BC6-AC6BF248723C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
