@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PartialResponse.Net.Http\PartialResponse.Net.Http.csproj" />
+    <ProjectReference Include="..\..\src\PartialResponse\PartialResponse.csproj" />
   </ItemGroup>
 
   <ItemGroup>
