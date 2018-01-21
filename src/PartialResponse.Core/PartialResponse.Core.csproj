@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Partial response (fields) core components.</Description>
     <AssemblyTitle>PartialResponse.Core</AssemblyTitle>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <Authors>Arjen Post</Authors>
     <TargetFrameworks>net45;net451;netstandard1.6</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -16,9 +16,6 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../PartialResponse.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
 </Project>
