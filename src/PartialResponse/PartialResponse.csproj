@@ -9,15 +9,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse</AssemblyName>
-    <PackageId>WebApi.PartialReponse</PackageId>
+    <PackageId>WebApi.PartialResponse</PackageId>
     <PackageTags>aspnet;webapi;aspnetwebapi;web;api;json;partial;response;partialresponse;fields</PackageTags>
     <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../PartialResponse.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
