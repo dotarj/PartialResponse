@@ -174,5 +174,18 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             // Assert
             Assert.Equal("[{\"foo\":\"bar\"},{\"foo\":\"bar\"}]", result.ToString());
         }
+
+        [Fact]
+        public void TheSerializeMethodShouldFilterArrayElementInsideArrayElement2()
+        {
+            // Arrange
+            var value = new { totalCount = 0, data = new object[0] };
+
+            // Act
+            jsonSerializer.Serialize(this.jsonWriter, value, _ => true);
+
+            // Assert
+            Assert.Equal("{\"totalCount\":0,\"data\":[]}", result.ToString());
+        }
     }
 }
