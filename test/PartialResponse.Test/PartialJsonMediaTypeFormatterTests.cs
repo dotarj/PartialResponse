@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,15 +19,9 @@ namespace PartialResponse.Net.Http.Test
         private readonly PartialJsonMediaTypeFormatter formatter;
         private readonly HttpRequestMessage httpRequest = new HttpRequestMessage();
         private readonly HttpResponseBase httpResponse = Mock.Of<HttpResponseBase>();
-        private readonly HttpContextBase httpContext = Mock.Of<HttpContextBase>();
 
         public PartialJsonMediaTypeFormatterTests()
         {
-            Mock.Get(this.httpContext)
-                .SetupGet(context => context.Response)
-                .Returns(this.httpResponse);
-
-            httpRequest.Properties["MS_HttpContext"] = this.httpContext;
             httpRequest.Method = HttpMethod.Get;
 
             this.formatter = (PartialJsonMediaTypeFormatter)new PartialJsonMediaTypeFormatter().GetPerRequestFormatterInstance(null, httpRequest, null);
@@ -140,15 +135,14 @@ namespace PartialResponse.Net.Http.Test
         }
 
         [Fact]
-        public async Task TheWriteToStreamAsyncMethodShouldBypassPartialResponseIfStatusCodeIsNot200()
+        public async Task TheWriteToStreamAsyncMethodShouldBypassPartialResponseIfHttpResponseMessageStatusCodeIsNot200()
         {
             // Arrange
-            Mock.Get(this.httpResponse)
-                .SetupGet(httpResponse => httpResponse.StatusCode)
-                .Returns(500);
+            var httpResponseMessage =  new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+            httpRequest.Properties["PR_HttpResponseMessage"] = httpResponseMessage;
 
             this.httpRequest.RequestUri = new Uri("http://localhost?fields=");
-            this.httpRequest.SetBypassPartialResponse(true);
 
             var value = new { foo = "bar" };
 
@@ -160,23 +154,68 @@ namespace PartialResponse.Net.Http.Test
         }
 
         [Fact]
-        public async Task TheWriteToStreamAsyncMethodShouldNotBypassPartialResponseIfHttpContextIsNull()
+        public async Task TheWriteToStreamAsyncMethodShouldNotBypassPartialResponseIfHttpContextResponseIsNull()
         {
             // Arrange
-            Mock.Get(this.httpResponse)
-                .SetupGet(httpResponse => httpResponse.StatusCode)
-                .Returns(500);
+            var httpContext = Mock.Of<HttpContextBase>();
 
-            this.httpRequest.Properties["MS_HttpContext"] = null;
+            Mock.Get(httpContext)
+                .SetupGet(context => context.Response)
+                .Returns((HttpResponseBase)null);
+
+            httpRequest.Properties["MS_HttpContext"] = httpContext;
+
             this.httpRequest.RequestUri = new Uri("http://localhost?fields=foo");
 
-            var value = new { foo = "bar", baz = "qux" };
+            var value = new { foo = "bar" };
 
             // Act
             var body = await this.WriteAsync(value);
 
             // Assert
             Assert.Equal("{\"foo\":\"bar\"}", body);
+        }
+
+        [Fact]
+        public async Task TheWriteToStreamAsyncMethodShouldBypassPartialResponseIfHttpContextStatusCodeIsNot200()
+        {
+            // Arrange
+            var httpContext = Mock.Of<HttpContextBase>();
+
+            Mock.Get(httpContext)
+                .SetupGet(context => context.Response)
+                .Returns(this.httpResponse);
+
+            httpRequest.Properties["MS_HttpContext"] = httpContext;
+
+            Mock.Get(this.httpResponse)
+                .SetupGet(httpResponse => httpResponse.StatusCode)
+                .Returns(500);
+
+            this.httpRequest.RequestUri = new Uri("http://localhost?fields=");
+
+            var value = new { foo = "bar" };
+
+            // Act
+            var body = await this.WriteAsync(value);
+
+            // Assert
+            Assert.Equal("{\"foo\":\"bar\"}", body);
+        }
+
+        [Fact]
+        public async Task TheWriteToStreamAsyncMethodShouldNotBypassPartialResponseIfHttpContextAndHttpResponseMessageAreNotSet()
+        {
+            // Arrange
+            this.httpRequest.RequestUri = new Uri("http://localhost?fields=");
+
+            var value = new { foo = "bar" };
+
+            // Act
+            var body = await this.WriteAsync(value);
+
+            // Assert
+            Assert.Equal("{}", body);
         }
 
         [Fact]

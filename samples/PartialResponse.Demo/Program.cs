@@ -1,18 +1,15 @@
-﻿using Microsoft.Owin.Hosting;
-using System;
+﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-namespace PartialResponse.Net.Http.Demo
+using PartialResponse.Demo;
+
+namespace PartialResponse
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string baseAddress = "http://localhost:9000/"; 
-
-            using (WebApp.Start<Startup>(url: baseAddress)) 
-            {
-                Console.ReadLine();
-            } 
+            //OwinHostDemo.Run("http://localhost:9000/");
+            HttpSelfHostDemo.Run("http://localhost:9001/");
         }
     }
 }
