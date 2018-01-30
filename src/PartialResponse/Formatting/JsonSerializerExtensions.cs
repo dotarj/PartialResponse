@@ -62,11 +62,17 @@ namespace PartialResponse.Net.Http.Formatting
 
         private static void RemoveArrayElements(JArray array, string currentPath, SerializerContext context)
         {
+            var containsChildItems = array.Count > 0;
+
             array.OfType<JObject>()
                 .ToList()
                 .ForEach(childObject => RemoveObjectProperties(childObject, currentPath, context));
 
-            RemoveArrayIfEmpty(array);
+            // PartialResponse should only remove an array when it initially contained items, but was empty after filtering.
+            if (containsChildItems)
+            {
+                RemoveArrayIfEmpty(array);
+            }
         }
 
         private static void RemoveArrayIfEmpty(JArray array)
