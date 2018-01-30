@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Http;
 
-namespace PartialResponse.Net.Http.Demo
+namespace PartialResponse
 {
     public class FormatterController : ApiController
     {
-        public List<dynamic> Get()
+        public IHttpActionResult Get(int statusCode = 200)
         {
-            return new List<dynamic>()
+            return this.Content((HttpStatusCode)statusCode, new List<dynamic>
             {
                 new
                 {
@@ -38,7 +39,7 @@ namespace PartialResponse.Net.Http.Demo
                         Qux = 6
                     }
                 }
-            };
+            });
         }
     }
 }
