@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>ASP.NET Web API formatter for partial response (fields) JSON output.</Description>
     <AssemblyTitle>PartialResponse</AssemblyTitle>
-    <VersionPrefix>1.0.0-beta1</VersionPrefix>
+    <VersionPrefix>1.0.0-beta3</VersionPrefix>
     <Authors>Arjen Post</Authors>
     <TargetFramework>net45</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
