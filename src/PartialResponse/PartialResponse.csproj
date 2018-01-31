@@ -3,21 +3,18 @@
   <PropertyGroup>
     <Description>ASP.NET Web API formatter for partial response (fields) JSON output.</Description>
     <AssemblyTitle>PartialResponse</AssemblyTitle>
-    <VersionPrefix>1.0.0-beta1</VersionPrefix>
+    <VersionPrefix>1.0.0-beta3</VersionPrefix>
     <Authors>Arjen Post</Authors>
     <TargetFramework>net45</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>PartialResponse</AssemblyName>
-    <PackageId>WebApi.PartialReponse</PackageId>
+    <PackageId>WebApi.PartialResponse</PackageId>
     <PackageTags>aspnet;webapi;aspnetwebapi;web;api;json;partial;response;partialresponse;fields</PackageTags>
     <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../PartialResponse.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
