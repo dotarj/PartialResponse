@@ -365,11 +365,11 @@ namespace PartialResponse.Net.Http.Formatting
                 return true;
             }
 
-            var httpContext =  request.GetHttpContext();
+            var statusCode =  request.GetResponseStatusCode();
 
-            if (httpContext != null)
+            if (statusCode != null)
             {
-                return httpContext.Response.StatusCode != 200;
+                return statusCode != 200;
             }
 
             return false;

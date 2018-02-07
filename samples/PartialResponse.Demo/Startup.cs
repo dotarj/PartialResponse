@@ -4,19 +4,20 @@ using Owin;
 using PartialResponse.Net.Http.Formatting;
 using System.Web.Http;
 
-namespace PartialResponse.Net.Http.Demo
+namespace PartialResponse
 {
     public class Startup 
     {
         public void Configuration(IAppBuilder appBuilder)
         { 
             var configuration = new HttpConfiguration();
-            
+
+            configuration.Filters.Add(new PartialJsonActionFilter());
             configuration.Formatters.Clear();
             configuration.Formatters.Add(new PartialJsonMediaTypeFormatter() { IgnoreCase = true });
             configuration.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional }); 
 
-            appBuilder.Use<HttpResponseExceptionMiddleware>().UseWebApi(configuration);
+            appBuilder.UseWebApi(configuration);
         } 
     } 
 }
