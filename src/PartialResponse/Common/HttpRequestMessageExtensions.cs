@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-using PartialResponse.Net.Http.Formatting;
 using System.Web;
+using PartialResponse;
+using PartialResponse.Net.Http.Formatting;
 
 namespace System.Net.Http
 {
@@ -47,16 +48,24 @@ namespace System.Net.Http
             return false;
         }
 
-        internal static HttpContextBase GetHttpContext(this HttpRequestMessage request)
+        internal static int? GetResponseStatusCode(this HttpRequestMessage request)
         {
-            object value;
+            int? statusCode = null;
 
-            if (request.Properties.TryGetValue("MS_HttpContext", out value))
+            if (request.Properties.TryGetValue(PartialJsonActionFilter.HttpResponseMessageKey, out var value))
             {
-                return (HttpContextBase)value;
+                var httpResponseMessage = (HttpResponseMessage)value;
+
+                statusCode = (int)httpResponseMessage.StatusCode;
+            }
+            else if (request.Properties.TryGetValue("MS_HttpContext", out value))
+            {
+                var httpContext = (HttpContextBase)value;
+
+                statusCode =  httpContext.Response?.StatusCode;
             }
 
-            return null;
+            return statusCode;
         }
     }
 }
