@@ -36,9 +36,9 @@ namespace System.Threading.Tasks
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task<TResult> FromError<TResult>(Exception exception)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
-            tcs.SetException(exception);
-            return tcs.Task;
+            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            taskCompletionSource.SetException(exception);
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace System.Threading.Tasks
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task<TResult> FromResult<TResult>(TResult result)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
-            tcs.SetResult(result);
-            return tcs.Task;
+            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            taskCompletionSource.SetResult(result);
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
