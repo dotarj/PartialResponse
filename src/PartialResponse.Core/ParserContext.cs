@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.IO;

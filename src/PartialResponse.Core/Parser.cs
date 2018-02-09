@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 
@@ -69,7 +71,7 @@ namespace PartialResponse.Core
                 return;
             }
 
-            if (currentToken.Type != TokenType.Identifier)
+            if (this.currentToken.Type != TokenType.Identifier)
             {
                 this.context.Error = new UnexpectedTokenError(this.currentToken);
 
@@ -80,7 +82,7 @@ namespace PartialResponse.Core
 
             if (this.prefixes.Count > 0)
             {
-                var previousPrefix = depth > 0 && this.previousToken.Type != TokenType.ForwardSlash ? this.prefixes.Peek() : this.prefixes.Pop();
+                var previousPrefix = this.depth > 0 && this.previousToken.Type != TokenType.ForwardSlash ? this.prefixes.Peek() : this.prefixes.Pop();
 
                 prefix = $"{previousPrefix}/{this.currentToken.Value}";
             }
