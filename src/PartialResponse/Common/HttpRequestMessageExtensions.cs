@@ -38,9 +38,7 @@ namespace System.Net.Http
                 throw new ArgumentNullException("request");
             }
 
-            object value;
-
-            if (request.Properties.TryGetValue(PartialJsonMediaTypeFormatter.BypassPartialResponse, out value))
+            if (request.Properties.TryGetValue(PartialJsonMediaTypeFormatter.BypassPartialResponse, out object value))
             {
                 return (bool)value;
             }

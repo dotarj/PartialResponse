@@ -130,7 +130,7 @@ namespace PartialResponse.Net.Http.Formatting
             {
                 if (value < FormattingUtilities.DefaultMinDepth)
                 {
-                    throw new ArgumentOutOfRangeException("value", value, string.Format("Value must be greater than or equal to {0}.", FormattingUtilities.DefaultMinDepth));
+                    throw new ArgumentOutOfRangeException("value", value, $"Value must be greater than or equal to {FormattingUtilities.DefaultMinDepth}.");
                 }
 
                 this.maxDepth = value;

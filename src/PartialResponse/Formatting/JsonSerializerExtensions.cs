@@ -147,7 +147,7 @@ namespace PartialResponse.Net.Http.Formatting
                 return name;
             }
 
-            return string.Format("{0}/{1}", path, name);
+            return $"{path}/{name}";
         }
     }
 }
