@@ -9,8 +9,8 @@ namespace PartialResponse.Net.Http.Formatting
     /// </summary>
     internal static class MediaTypeConstants
     {
-        private static readonly MediaTypeHeaderValue _defaultApplicationJsonMediaType = new MediaTypeHeaderValue("application/json");
-        private static readonly MediaTypeHeaderValue _defaultTextJsonMediaType = new MediaTypeHeaderValue("text/json");
+        private static readonly MediaTypeHeaderValue DefaultApplicationJsonMediaType = new MediaTypeHeaderValue("application/json");
+        private static readonly MediaTypeHeaderValue DefaultTextJsonMediaType = new MediaTypeHeaderValue("text/json");
 
         /// <summary>
         /// Gets a <see cref="MediaTypeHeaderValue"/> instance representing <c>application/json</c>.
@@ -20,7 +20,7 @@ namespace PartialResponse.Net.Http.Formatting
         /// </value>
         public static MediaTypeHeaderValue ApplicationJsonMediaType
         {
-            get { return _defaultApplicationJsonMediaType.Clone(); }
+            get { return DefaultApplicationJsonMediaType.Clone(); }
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace PartialResponse.Net.Http.Formatting
         /// </value>
         public static MediaTypeHeaderValue TextJsonMediaType
         {
-            get { return _defaultTextJsonMediaType.Clone(); }
+            get { return DefaultTextJsonMediaType.Clone(); }
         }
     }
 }

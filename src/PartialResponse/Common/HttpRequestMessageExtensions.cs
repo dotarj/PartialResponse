@@ -14,8 +14,8 @@ namespace System.Net.Http
         /// <summary>
         /// Sets a value indicating whether partial response should be bypassed.
         /// </summary>
-        /// <param name="value">The value.</param>
         /// <param name="request">The HTTP request.</param>
+        /// <param name="value">The value.</param>
         public static void SetBypassPartialResponse(this HttpRequestMessage request, bool value)
         {
             if (request == null)
@@ -62,7 +62,7 @@ namespace System.Net.Http
             {
                 var httpContext = (HttpContextBase)value;
 
-                statusCode =  httpContext.Response?.StatusCode;
+                statusCode = httpContext.Response?.StatusCode;
             }
 
             return statusCode;

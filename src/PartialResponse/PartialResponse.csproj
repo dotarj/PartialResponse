@@ -29,4 +29,14 @@
     <Reference Include="System.Web" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -13,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using PartialResponse.Core;
 
 namespace PartialResponse.Net.Http.Formatting
@@ -22,18 +22,18 @@ namespace PartialResponse.Net.Http.Formatting
     /// </summary>
     public class PartialJsonMediaTypeFormatter : MediaTypeFormatter
     {
-        private readonly HttpRequestMessage _request;
+        internal const string BypassPartialResponse = "BypassPartialResponse";
 
-        private JsonSerializerSettings _jsonSerializerSettings;
-        private int _maxDepth = FormattingUtilities.DefaultMaxDepth;
-        private Fields? _fields;
+        private readonly HttpRequestMessage request;
 
 #if !NETFX_CORE // DataContractJsonSerializer and DataContractResolver are not supported in the portable library version.
-        private readonly IContractResolver _defaultContractResolver;
-        private RequestHeaderMapping _requestHeaderMapping;
+        private readonly IContractResolver defaultContractResolver;
+        private RequestHeaderMapping requestHeaderMapping;
 #endif
 
-        internal const string BypassPartialResponse = "BypassPartialResponse";
+        private JsonSerializerSettings jsonSerializerSettings;
+        private int maxDepth = FormattingUtilities.DefaultMaxDepth;
+        private Fields? fields;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialResponse.Net.Http.Formatting.PartialJsonMediaTypeFormatter"/>
@@ -42,56 +42,37 @@ namespace PartialResponse.Net.Http.Formatting
         public PartialJsonMediaTypeFormatter()
         {
             // Set default supported media types
-            SupportedMediaTypes.Add(MediaTypeConstants.ApplicationJsonMediaType);
-            SupportedMediaTypes.Add(MediaTypeConstants.TextJsonMediaType);
+            this.SupportedMediaTypes.Add(MediaTypeConstants.ApplicationJsonMediaType);
+            this.SupportedMediaTypes.Add(MediaTypeConstants.TextJsonMediaType);
 
             // Initialize serializer
 #if !NETFX_CORE // We don't support JsonContractResolver is not supported in the portable library portable library version.
-            _defaultContractResolver = new JsonContractResolver(this);
+            this.defaultContractResolver = new JsonContractResolver(this);
 #endif
-            _jsonSerializerSettings = CreateDefaultSerializerSettings();
+            this.jsonSerializerSettings = this.CreateDefaultSerializerSettings();
 
             // Set default supported character encodings
-            SupportedEncodings.Add(new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true));
-            SupportedEncodings.Add(new UnicodeEncoding(bigEndian: false, byteOrderMark: true, throwOnInvalidBytes: true));
+            this.SupportedEncodings.Add(new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true));
+            this.SupportedEncodings.Add(new UnicodeEncoding(bigEndian: false, byteOrderMark: true, throwOnInvalidBytes: true));
 
 #if !NETFX_CORE // MediaTypeMappings are not supported in portable library
-            _requestHeaderMapping = new XmlHttpRequestHeaderMapping();
-            MediaTypeMappings.Add(_requestHeaderMapping);
+            this.requestHeaderMapping = new XmlHttpRequestHeaderMapping();
+            this.MediaTypeMappings.Add(this.requestHeaderMapping);
 #endif
         }
 
         private PartialJsonMediaTypeFormatter(HttpRequestMessage request)
             : this()
         {
-            _request = request;
-        }
-
-        /// <summary>
-        /// Returns a specialized instance of the System.Net.Http.Formatting.MediaTypeFormatter
-        /// that can format a response for the given parameters.
-        /// </summary>
-        /// <param name="type">The type to format.</param>
-        /// <param name="request">The request.</param>
-        /// <param name="mediaType">The media type.</param>
-        /// <returns>Returns System.Net.Http.Formatting.MediaTypeFormatter.</returns>
-        public override MediaTypeFormatter GetPerRequestFormatterInstance(Type type, HttpRequestMessage request, MediaTypeHeaderValue mediaType)
-        {
-            return new PartialJsonMediaTypeFormatter(request)
-            {
-                IgnoreCase = IgnoreCase,
-                Indent = Indent,
-                MaxDepth = MaxDepth,
-                SerializerSettings = SerializerSettings
-            };
+            this.request = request;
         }
 
         /// <summary>
         /// Gets the default media type for Json, namely "application/json".
         /// </summary>
         /// <remarks>
-        /// The default media type does not have any <c>charset</c> parameter as 
-        /// the <see cref="Encoding"/> can be configured on a per <see cref="PartialJsonMediaTypeFormatter"/> 
+        /// The default media type does not have any <c>charset</c> parameter as
+        /// the <see cref="Encoding"/> can be configured on a per <see cref="PartialJsonMediaTypeFormatter"/>
         /// instance basis.
         /// </remarks>
         /// <value>
@@ -108,7 +89,11 @@ namespace PartialResponse.Net.Http.Formatting
         /// </summary>
         public JsonSerializerSettings SerializerSettings
         {
-            get { return _jsonSerializerSettings; }
+            get
+            {
+                return this.jsonSerializerSettings;
+            }
+
             set
             {
                 if (value == null)
@@ -116,7 +101,7 @@ namespace PartialResponse.Net.Http.Formatting
                     throw new ArgumentNullException("value");
                 }
 
-                _jsonSerializerSettings = value;
+                this.jsonSerializerSettings = value;
             }
         }
 
@@ -126,7 +111,7 @@ namespace PartialResponse.Net.Http.Formatting
         public bool IgnoreCase { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to indent elements when writing data. 
+        /// Gets or sets a value indicating whether to indent elements when writing data.
         /// </summary>
         public bool Indent { get; set; }
 
@@ -138,8 +123,9 @@ namespace PartialResponse.Net.Http.Formatting
         {
             get
             {
-                return _maxDepth;
+                return this.maxDepth;
             }
+
             set
             {
                 if (value < FormattingUtilities.DefaultMinDepth)
@@ -147,21 +133,41 @@ namespace PartialResponse.Net.Http.Formatting
                     throw new ArgumentOutOfRangeException("value", value, string.Format("Value must be greater than or equal to {0}.", FormattingUtilities.DefaultMinDepth));
                 }
 
-                _maxDepth = value;
+                this.maxDepth = value;
             }
         }
 #endif
 
         /// <summary>
+        /// Returns a specialized instance of the System.Net.Http.Formatting.MediaTypeFormatter
+        /// that can format a response for the given parameters.
+        /// </summary>
+        /// <param name="type">The type to format.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="mediaType">The media type.</param>
+        /// <returns>Returns System.Net.Http.Formatting.MediaTypeFormatter.</returns>
+        public override MediaTypeFormatter GetPerRequestFormatterInstance(Type type, HttpRequestMessage request, MediaTypeHeaderValue mediaType)
+        {
+            return new PartialJsonMediaTypeFormatter(request)
+            {
+                IgnoreCase = this.IgnoreCase,
+                Indent = this.Indent,
+                MaxDepth = this.MaxDepth,
+                SerializerSettings = this.SerializerSettings
+            };
+        }
+
+        /// <summary>
         /// Creates a <see cref="JsonSerializerSettings"/> instance with the default settings used by the <see cref="PartialJsonMediaTypeFormatter"/>.
         /// </summary>
+        /// <returns>A <see cref="JsonSerializerSettings"/> instance with the default settings used by the <see cref="PartialJsonMediaTypeFormatter"/>.</returns>
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This could only be static half the time.")]
         public JsonSerializerSettings CreateDefaultSerializerSettings()
         {
             return new JsonSerializerSettings()
             {
 #if !NETFX_CORE // no Contract resolver in portable libraries
-                ContractResolver = _defaultContractResolver,
+                ContractResolver = this.defaultContractResolver,
 #endif
                 MissingMemberHandling = MissingMemberHandling.Ignore,
 
@@ -227,54 +233,11 @@ namespace PartialResponse.Net.Http.Formatting
 
             try
             {
-                return TaskHelpers.FromResult(ReadFromStream(type, readStream, content, formatterLogger));
+                return TaskHelpers.FromResult(this.ReadFromStream(type, readStream, content, formatterLogger));
             }
             catch (Exception e)
             {
                 return TaskHelpers.FromError<object>(e);
-            }
-        }
-
-        private object ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
-        {
-            HttpContentHeaders contentHeaders = content == null ? null : content.Headers;
-
-            // If content length is 0 then return default value for this type
-            if (contentHeaders != null && contentHeaders.ContentLength == 0)
-            {
-                return GetDefaultValueForType(type);
-            }
-
-            // Get the character encoding for the content
-            Encoding effectiveEncoding = SelectCharacterEncoding(contentHeaders);
-
-            try
-            {
-                using (JsonTextReader jsonTextReader = new JsonTextReader(new StreamReader(readStream, effectiveEncoding)) { CloseInput = false, MaxDepth = _maxDepth })
-                {
-                    JsonSerializer jsonSerializer = JsonSerializer.Create(_jsonSerializerSettings);
-                    if (formatterLogger != null)
-                    {
-                        // Error must always be marked as handled
-                        // Failure to do so can cause the exception to be rethrown at every recursive level and overflow the stack for x64 CLR processes
-                        jsonSerializer.Error += (sender, e) =>
-                        {
-                            Exception exception = e.ErrorContext.Error;
-                            formatterLogger.LogError(e.ErrorContext.Path, exception);
-                            e.ErrorContext.Handled = true;
-                        };
-                    }
-                    return jsonSerializer.Deserialize(jsonTextReader, type);
-                }
-            }
-            catch (Exception e)
-            {
-                if (formatterLogger == null)
-                {
-                    throw;
-                }
-                formatterLogger.LogError(String.Empty, e);
-                return GetDefaultValueForType(type);
             }
         }
 
@@ -303,34 +266,13 @@ namespace PartialResponse.Net.Http.Formatting
 
             try
             {
-                WriteToStream(type, value, writeStream, content);
+                this.WriteToStream(type, value, writeStream, content);
                 return TaskHelpers.Completed();
             }
             catch (Exception e)
             {
                 return TaskHelpers.FromError(e);
             }
-        }
-
-        private Fields? GetPartialResponseFields(HttpRequestMessage request)
-        {
-            var queryOption = HttpUtility.ParseQueryString(request.RequestUri.Query)["fields"];
-
-            if (queryOption != null)
-            {
-                Fields fields;
-
-                if (!Fields.TryParse(queryOption, out fields))
-                {
-                    // Not much choice but to throw a HttpResponseException inside a MediaTypeFormatter (no access 
-                    // to the HttpResponseMessage).
-                    throw new HttpResponseException(HttpStatusCode.BadRequest);
-                }
-
-                return fields;
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -345,7 +287,7 @@ namespace PartialResponse.Net.Http.Formatting
                 throw new ArgumentNullException("field");
             }
 
-            return _fields.HasValue ? _fields.Value.Matches(field, IgnoreCase) : true;
+            return this.fields.HasValue ? this.fields.Value.Matches(field, this.IgnoreCase) : true;
         }
 
         /// <summary>
@@ -365,7 +307,7 @@ namespace PartialResponse.Net.Http.Formatting
                 return true;
             }
 
-            var statusCode =  request.GetResponseStatusCode();
+            var statusCode = request.GetResponseStatusCode();
 
             if (statusCode != null)
             {
@@ -375,31 +317,95 @@ namespace PartialResponse.Net.Http.Formatting
             return false;
         }
 
+        private object ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+        {
+            var contentHeaders = content == null ? null : content.Headers;
+
+            // If content length is 0 then return default value for this type
+            if (contentHeaders != null && contentHeaders.ContentLength == 0)
+            {
+                return GetDefaultValueForType(type);
+            }
+
+            // Get the character encoding for the content
+            var effectiveEncoding = this.SelectCharacterEncoding(contentHeaders);
+
+            try
+            {
+                using (var jsonTextReader = new JsonTextReader(new StreamReader(readStream, effectiveEncoding)) { CloseInput = false, MaxDepth = this.maxDepth })
+                {
+                    var jsonSerializer = JsonSerializer.Create(this.jsonSerializerSettings);
+                    if (formatterLogger != null)
+                    {
+                        // Error must always be marked as handled
+                        // Failure to do so can cause the exception to be rethrown at every recursive level and overflow the stack for x64 CLR processes
+                        jsonSerializer.Error += (sender, e) =>
+                        {
+                            var exception = e.ErrorContext.Error;
+                            formatterLogger.LogError(e.ErrorContext.Path, exception);
+                            e.ErrorContext.Handled = true;
+                        };
+                    }
+
+                    return jsonSerializer.Deserialize(jsonTextReader, type);
+                }
+            }
+            catch (Exception e)
+            {
+                if (formatterLogger == null)
+                {
+                    throw;
+                }
+
+                formatterLogger.LogError(string.Empty, e);
+                return GetDefaultValueForType(type);
+            }
+        }
+
+        private Fields? GetPartialResponseFields(HttpRequestMessage request)
+        {
+            var queryOption = HttpUtility.ParseQueryString(request.RequestUri.Query)["fields"];
+
+            if (queryOption != null)
+            {
+                if (!Fields.TryParse(queryOption, out Fields fields))
+                {
+                    // Not much choice but to throw a HttpResponseException inside a MediaTypeFormatter (no access
+                    // to the HttpResponseMessage).
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                }
+
+                return fields;
+            }
+
+            return null;
+        }
+
         private void WriteToStream(Type type, object value, Stream writeStream, HttpContent content)
         {
-            Encoding effectiveEncoding = SelectCharacterEncoding(content == null ? null : content.Headers);
+            var effectiveEncoding = this.SelectCharacterEncoding(content == null ? null : content.Headers);
 
-            using (JsonTextWriter jsonTextWriter = new JsonTextWriter(new StreamWriter(writeStream, effectiveEncoding)) { CloseOutput = false })
+            using (var jsonTextWriter = new JsonTextWriter(new StreamWriter(writeStream, effectiveEncoding)) { CloseOutput = false })
             {
-                if (Indent)
+                if (this.Indent)
                 {
                     jsonTextWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
                 }
 
-                JsonSerializer jsonSerializer = JsonSerializer.Create(_jsonSerializerSettings);
+                var jsonSerializer = JsonSerializer.Create(this.jsonSerializerSettings);
 
-                if (_request != null && !ShouldBypassPartialResponse(_request))
+                if (this.request != null && !this.ShouldBypassPartialResponse(this.request))
                 {
-                    _fields = GetPartialResponseFields(_request);
+                    this.fields = this.GetPartialResponseFields(this.request);
                 }
 
-                if (_fields == null)
+                if (this.fields == null)
                 {
                     jsonSerializer.Serialize(jsonTextWriter, value);
                 }
                 else
                 {
-                    jsonSerializer.Serialize(jsonTextWriter, value, ShouldSerialize);
+                    jsonSerializer.Serialize(jsonTextWriter, value, this.ShouldSerialize);
                 }
 
                 jsonTextWriter.Flush();
