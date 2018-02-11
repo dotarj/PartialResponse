@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System;
 using System.IO;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace PartialResponse.Core.Test
         public void TheParseMethodShouldParseEmptySource()
         {
             // Arrange
-            var source = new StringReader("");
+            var source = new StringReader(string.Empty);
             var context = new ParserContext(source);
             var parser = new Parser(context);
 
@@ -63,7 +65,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -78,7 +80,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Theory]
@@ -113,7 +115,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo", "bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo", "bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Theory]
@@ -148,7 +150,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -163,7 +165,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar", "foo/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar", "foo/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -178,7 +180,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar", "foo/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar", "foo/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -193,7 +195,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar/baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -208,7 +210,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar/baz", "foo/qux/quux" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar/baz", "foo/qux/quux" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -290,7 +292,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar", "baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar", "baz" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -305,7 +307,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo/bar/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo/bar/baz", "qux" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -320,7 +322,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -335,7 +337,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -350,7 +352,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
 
         [Fact]
@@ -365,7 +367,7 @@ namespace PartialResponse.Core.Test
             parser.Parse();
 
             // Assert
-            Assert.Equal(new [] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
+            Assert.Equal(new[] { "foo" }, context.Values.Select(value => string.Join("/", value.Parts)));
         }
     }
 }

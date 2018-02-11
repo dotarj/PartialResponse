@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System;
 using Xunit;
 
@@ -10,10 +12,9 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             string value = null;
-            Fields fields;
 
             // Act
-            Assert.Throws<ArgumentNullException>(() => Fields.TryParse(value, out fields));
+            Assert.Throws<ArgumentNullException>(() => Fields.TryParse(value, out Fields fields));
         }
 
         [Fact]
@@ -31,10 +32,9 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields;
 
             // Act
-            Fields.TryParse(value, out fields);
+            Fields.TryParse(value, out Fields fields);
 
             // Assert
             Assert.False(fields.Matches("bar"));
@@ -45,10 +45,9 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields;
 
             // Act
-            Fields.TryParse(value, out fields);
+            Fields.TryParse(value, out Fields fields);
 
             // Assert
             Assert.True(fields.Matches("foo"));
@@ -59,10 +58,9 @@ namespace PartialResponse.Core.Test
         {
             // Arrange
             var value = "foo";
-            Fields fields;
 
             // Act
-            Fields.TryParse(value, out fields);
+            Fields.TryParse(value, out Fields fields);
 
             // Assert
             Assert.True(fields.Matches("FOO", true));

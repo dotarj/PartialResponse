@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System;
 using Xunit;
 
@@ -25,7 +27,7 @@ namespace PartialResponse.Core.Test
             var field = new Field(value);
 
             // Assert
-            Assert.Equal(new [] { "foo" }, field.Parts);
+            Assert.Equal(new[] { "foo" }, field.Parts);
         }
 
         [Fact]
@@ -38,7 +40,7 @@ namespace PartialResponse.Core.Test
             var field = new Field(value);
 
             // Assert
-            Assert.Equal(new [] { "foo", "bar" }, field.Parts);
+            Assert.Equal(new[] { "foo", "bar" }, field.Parts);
         }
 
         [Fact]
@@ -48,7 +50,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches(new [] { "bar" });
+            var result = field.Matches(new[] { "bar" });
 
             // Assert
             Assert.False(result);
@@ -61,7 +63,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo/bar");
 
             // Act
-            var result = field.Matches(new [] { "foo", "baz" });
+            var result = field.Matches(new[] { "foo", "baz" });
 
             // Assert
             Assert.False(result);
@@ -74,7 +76,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches(new [] { "foo" });
+            var result = field.Matches(new[] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -87,7 +89,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches(new [] { "foo", "bar" });
+            var result = field.Matches(new[] { "foo", "bar" });
 
             // Assert
             Assert.True(result);
@@ -100,7 +102,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo/bar");
 
             // Act
-            var result = field.Matches(new [] { "foo" });
+            var result = field.Matches(new[] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -113,7 +115,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("*");
 
             // Act
-            var result = field.Matches(new [] { "foo" });
+            var result = field.Matches(new[] { "foo" });
 
             // Assert
             Assert.True(result);
@@ -126,7 +128,7 @@ namespace PartialResponse.Core.Test
             var field = new Field("foo");
 
             // Act
-            var result = field.Matches(new [] { "FOO" }, true);
+            var result = field.Matches(new[] { "FOO" }, true);
 
             // Assert
             Assert.True(result);
