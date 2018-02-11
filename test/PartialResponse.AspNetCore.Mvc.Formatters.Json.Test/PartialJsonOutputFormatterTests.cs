@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +61,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
                 .SetupGet(queryCollection => queryCollection["fields"])
                 .Returns("foo/");
 
-            var writeContext = new OutputFormatterWriteContext(this.httpContext, (stream, encoding) => new StringWriter(this.body), typeof(object), new {});
+            var writeContext = new OutputFormatterWriteContext(this.httpContext, (stream, encoding) => new StringWriter(this.body), typeof(object), new { });
             var formatter = new PartialJsonOutputFormatter(new JsonSerializerSettings(), Mock.Of<ArrayPool<char>>(), false);
 
             // Act
@@ -86,7 +88,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
                 .SetupGet(queryCollection => queryCollection["fields"])
                 .Returns("foo/");
 
-            var writeContext = new OutputFormatterWriteContext(this.httpContext, (stream, encoding) => new StringWriter(this.body), typeof(object), new {});
+            var writeContext = new OutputFormatterWriteContext(this.httpContext, (stream, encoding) => new StringWriter(this.body), typeof(object), new { });
             var formatter = new PartialJsonOutputFormatter(new JsonSerializerSettings(), Mock.Of<ArrayPool<char>>(), false);
 
             // Act
@@ -218,7 +220,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
 
             Mock.Get(this.queryCollection)
                 .SetupGet(queryCollection => queryCollection["fields"])
-                .Returns("");
+                .Returns(string.Empty);
 
             this.httpRequest.BypassPartialResponse();
 
@@ -248,7 +250,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
 
             Mock.Get(this.queryCollection)
                 .SetupGet(queryCollection => queryCollection["fields"])
-                .Returns("");
+                .Returns(string.Empty);
 
             var value = new { foo = "bar" };
 

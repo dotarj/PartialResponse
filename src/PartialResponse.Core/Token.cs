@@ -10,7 +10,7 @@ namespace PartialResponse.Core
     public struct Token
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Token"/> class.
+        /// Initializes a new instance of the <see cref="Token"/> struct.
         /// </summary>
         /// <param name="value">The value of the token.</param>
         /// <param name="type">The <see cref="TokenType"/> of the token.</param>

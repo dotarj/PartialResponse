@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.Net.Http.Formatting;
 using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace PartialResponse.Net.Http.Formatting
 {
@@ -11,19 +11,27 @@ namespace PartialResponse.Net.Http.Formatting
     // Uses the IRequiredMemberSelector to choose required members
     internal class JsonContractResolver : DefaultContractResolver
     {
-        private readonly MediaTypeFormatter _formatter;
+        private readonly MediaTypeFormatter formatter;
 
         public JsonContractResolver(MediaTypeFormatter formatter)
         {
-            _formatter = formatter;
+            this.formatter = formatter;
+
             // Need this setting to have [Serializable] types serialized correctly
-            IgnoreSerializableAttribute = false;
+            this.IgnoreSerializableAttribute = false;
+        }
+
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            var property = base.CreateProperty(member, memberSerialization);
+            this.ConfigureProperty(member, property);
+            return property;
         }
 
         // Determines whether a member is required or not and sets the appropriate JsonProperty settings
         private void ConfigureProperty(MemberInfo member, JsonProperty property)
         {
-            if (_formatter.RequiredMemberSelector != null && _formatter.RequiredMemberSelector.IsRequiredMember(member))
+            if (this.formatter.RequiredMemberSelector != null && this.formatter.RequiredMemberSelector.IsRequiredMember(member))
             {
                 property.Required = Required.AllowNull;
                 property.DefaultValueHandling = DefaultValueHandling.Include;
@@ -33,13 +41,6 @@ namespace PartialResponse.Net.Http.Formatting
             {
                 property.Required = Required.Default;
             }
-        }
-
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        {
-            JsonProperty property = base.CreateProperty(member, memberSerialization);
-            ConfigureProperty(member, property);
-            return property;
         }
     }
 }

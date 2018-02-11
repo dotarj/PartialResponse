@@ -3,23 +3,26 @@
 namespace System.Threading.Tasks
 {
     /// <summary>
-    /// Helpers for safely using Task libraries. 
+    /// Helpers for safely using Task libraries.
     /// </summary>
     internal static class TaskHelpers
     {
-        private static readonly Task _defaultCompleted = FromResult<AsyncVoid>(default(AsyncVoid));
+        private static readonly Task DefaultCompleted = FromResult<AsyncVoid>(default(AsyncVoid));
 
         /// <summary>
-        /// Returns a completed task that has no result. 
-        /// </summary>        
+        /// Returns a completed task that has no result.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task Completed()
         {
-            return _defaultCompleted;
+            return DefaultCompleted;
         }
 
         /// <summary>
         /// Returns an error task. The task is Completed, IsCanceled = False, IsFaulted = True
         /// </summary>
+        /// <param name="exception">The exception to bind to this <see cref="Task"/>.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task FromError(Exception exception)
         {
             return FromError<AsyncVoid>(exception);
@@ -28,22 +31,27 @@ namespace System.Threading.Tasks
         /// <summary>
         /// Returns an error task of the given type. The task is Completed, IsCanceled = False, IsFaulted = True
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
+        /// <param name="exception">The exception to bind to this <see cref="Task{TResult}"/>.</param>
+        /// <typeparam name="TResult">The type of the result produced by this <see cref="Task{TResult}"/>.</typeparam>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task<TResult> FromError<TResult>(Exception exception)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
-            tcs.SetException(exception);
-            return tcs.Task;
+            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            taskCompletionSource.SetException(exception);
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
-        /// Returns a successful completed task with the given result.  
-        /// </summary>        
+        /// Returns a successful completed task with the given result.
+        /// </summary>
+        /// <param name="result">The result value to bind to this <see cref="Task{TResult}"/>.</param>
+        /// <typeparam name="TResult">The type of the result produced by this <see cref="Task{TResult}"/>.</typeparam>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal static Task<TResult> FromResult<TResult>(TResult result)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
-            tcs.SetResult(result);
-            return tcs.Task;
+            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            taskCompletionSource.SetResult(result);
+            return taskCompletionSource.Task;
         }
 
         /// <summary>

@@ -6,6 +6,9 @@ using PartialResponse.Core;
 
 namespace Microsoft.AspNetCore.Http
 {
+    /// <summary>
+    /// Provides extension methods for the <see cref="HttpRequest"/> class.
+    /// </summary>
     public static class HttpRequestExtensions
     {
         /// <summary>

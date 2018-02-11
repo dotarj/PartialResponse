@@ -1,21 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Partial response (fields) core components.</Description>
-    <AssemblyTitle>PartialResponse.Core</AssemblyTitle>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <Authors>Arjen Post</Authors>
-    <TargetFrameworks>net45;net451;netstandard1.6</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFrameworks>net45;net451;netstandard1.6</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>PartialResponse.Core</AssemblyName>
-    <PackageId>PartialResponse.Core</PackageId>
-    <PackageTags>partial;response;partialresponse;fields</PackageTags>
-    <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>git://github.com/dotarj/PartialResponse</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <VersionPrefix>1.0.0</VersionPrefix>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Arjen Post</Authors>
+    <Copyright>Copyright (c) Arjen Post</Copyright>
+    <Description>Partial response (fields) core components.</Description>
+    <PackageId>PartialResponse.Core</PackageId>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
+    <PackageTags>partial;response;partialresponse;fields;json</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/dotarj/PartialResponse</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+  </ItemGroup>
 
 </Project>

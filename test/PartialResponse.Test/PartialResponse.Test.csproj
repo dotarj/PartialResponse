@@ -1,25 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <TargetFramework>net461</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Update="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PartialResponse\PartialResponse.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,5 +21,28 @@
     <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\stylecop.ruleset">
+      <Link>stylecop.ruleset</Link>
+    </AdditionalFiles>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
 
 </Project>

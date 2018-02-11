@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 namespace PartialResponse.Core
 {
     /// <summary>
@@ -22,18 +24,27 @@ namespace PartialResponse.Core
         /// Gets the value of the unexpected token.
         /// </summary>
         /// <returns>The value of the unexpected token.</returns>
-        public string Value { get { return this.token.Value; } }
+        public string Value
+        {
+            get { return this.token.Value; }
+        }
 
         /// <summary>
         /// Gets the <see cref="TokenType"/> of the unexpected token.
         /// </summary>
         /// <returns>The <see cref="TokenType"/> of the unexpected token.</returns>
-        public TokenType Type { get { return this.token.Type; } }
+        public TokenType Type
+        {
+            get { return this.token.Type; }
+        }
 
         /// <summary>
         /// Gets the start position of the unexpected token.
         /// </summary>
         /// <returns>The start position of the unexpected token.</returns>
-        public int Position { get { return this.token.Position; } }
+        public int Position
+        {
+            get { return this.token.Position; }
+        }
     }
 }

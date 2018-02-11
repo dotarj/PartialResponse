@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -25,10 +27,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = "bar", baz = "qux" } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
 
             // Assert
-            Assert.Equal("[{\"foo\":\"bar\"}]", result.ToString());
+            Assert.Equal("[{\"foo\":\"bar\"}]", this.result.ToString());
         }
 
         [Fact]
@@ -38,10 +40,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = new List<dynamic> { new { bar = "baz" } }, qux = "quux" };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "qux");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "qux");
 
             // Assert
-            Assert.Equal("{\"qux\":\"quux\"}", result.ToString());
+            Assert.Equal("{\"qux\":\"quux\"}", this.result.ToString());
         }
 
         [Fact]
@@ -51,10 +53,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = "bar" } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => false);
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => false);
 
             // Assert
-            Assert.Equal("[]", result.ToString());
+            Assert.Equal("[]", this.result.ToString());
         }
 
         [Fact]
@@ -64,10 +66,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = new { bar = "baz", qux = "quux" } } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" ||  _ == "foo/bar");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
 
             // Assert
-            Assert.Equal("[{\"foo\":{\"bar\":\"baz\"}}]", result.ToString());
+            Assert.Equal("[{\"foo\":{\"bar\":\"baz\"}}]", this.result.ToString());
         }
 
         [Fact]
@@ -77,10 +79,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = "bar", baz = "qux" };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
 
             // Assert
-            Assert.Equal("{\"foo\":\"bar\"}", result.ToString());
+            Assert.Equal("{\"foo\":\"bar\"}", this.result.ToString());
         }
 
         [Fact]
@@ -90,10 +92,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = new { bar = "baz" }, qux = "quux" };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "qux");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "qux");
 
             // Assert
-            Assert.Equal("{\"qux\":\"quux\"}", result.ToString());
+            Assert.Equal("{\"qux\":\"quux\"}", this.result.ToString());
         }
 
         [Fact]
@@ -103,10 +105,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = "bar" };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => false);
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => false);
 
             // Assert
-            Assert.Equal("{}", result.ToString());
+            Assert.Equal("{}", this.result.ToString());
         }
 
         [Fact]
@@ -116,10 +118,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = new { bar = "baz", qux = "quux" } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
 
             // Assert
-            Assert.Equal("{\"foo\":{\"bar\":\"baz\"}}", result.ToString());
+            Assert.Equal("{\"foo\":{\"bar\":\"baz\"}}", this.result.ToString());
         }
 
         [Fact]
@@ -129,10 +131,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { foo = new List<dynamic> { new { bar = "baz", qux = "quux" } } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
 
             // Assert
-            Assert.Equal("{\"foo\":[{\"bar\":\"baz\"}]}", result.ToString());
+            Assert.Equal("{\"foo\":[{\"bar\":\"baz\"}]}", this.result.ToString());
         }
 
         [Fact]
@@ -142,10 +144,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = new List<dynamic> { new { bar = "baz", qux = "quux" } } } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" ||  _ == "foo/bar");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo" || _ == "foo/bar");
 
             // Assert
-            Assert.Equal("[{\"foo\":[{\"bar\":\"baz\"}]}]", result.ToString());
+            Assert.Equal("[{\"foo\":[{\"bar\":\"baz\"}]}]", this.result.ToString());
         }
 
         [Fact]
@@ -155,8 +157,15 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = "bar" }, new { foo = "bar" } };
             var count = 0;
 
+            bool shouldSerialize(string path)
+            {
+                count++;
+
+                return path == "foo";
+            }
+
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => { count++; return  _ == "foo"; });
+            this.jsonSerializer.Serialize(this.jsonWriter, value, shouldSerialize);
 
             // Assert
             Assert.Equal(1, count);
@@ -169,10 +178,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new List<dynamic> { new { foo = "bar", baz = "qux" }, new { foo = "bar", baz = "qux" } };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => _ == "foo");
 
             // Assert
-            Assert.Equal("[{\"foo\":\"bar\"},{\"foo\":\"bar\"}]", result.ToString());
+            Assert.Equal("[{\"foo\":\"bar\"},{\"foo\":\"bar\"}]", this.result.ToString());
         }
 
         [Fact]
@@ -182,10 +191,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
             var value = new { totalCount = 0, data = new object[0] };
 
             // Act
-            jsonSerializer.Serialize(this.jsonWriter, value, _ => true);
+            this.jsonSerializer.Serialize(this.jsonWriter, value, _ => true);
 
             // Assert
-            Assert.Equal("{\"totalCount\":0,\"data\":[]}", result.ToString());
+            Assert.Equal("{\"totalCount\":0,\"data\":[]}", this.result.ToString());
         }
     }
 }

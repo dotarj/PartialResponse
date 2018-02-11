@@ -1,9 +1,9 @@
 // Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 {
@@ -15,14 +15,14 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
     public static class JsonSerializerExtensions
     {
         /// <summary>
-        /// Serializes the specified <see cref="Object"/> and writes the JSON structure
+        /// Serializes the specified <see cref="object"/> and writes the JSON structure
         /// using the specified <see cref="JsonWriter"/>.
         /// </summary>
-        /// <param name="jsonSerializer">The <see cref="JsonSerializer"/> used to serialize the specified <see cref="Object"/>.</param>
+        /// <param name="jsonSerializer">The <see cref="JsonSerializer"/> used to serialize the specified <see cref="object"/>.</param>
         /// <param name="jsonWriter">The <see cref="JsonWriter"/> used to write the JSON structure.</param>
-        /// <param name="value">The <see cref="Object"/> to serialize.</param>
+        /// <param name="value">The <see cref="object"/> to serialize.</param>
         /// <param name="shouldSerialize">A <see cref="Func{T, TResult}"/> that is called for every field in the
-        /// <see cref="Object"/> to serialize, indicating whether the field should be serialized.</param>
+        /// <see cref="object"/> to serialize, indicating whether the field should be serialized.</param>
         public static void Serialize(this JsonSerializer jsonSerializer, JsonWriter jsonWriter, object value, Func<string, bool> shouldSerialize)
         {
             if (value == null)
@@ -147,7 +147,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 return name;
             }
 
-            return string.Format("{0}/{1}", path, name);
+            return $"{path}/{name}";
         }
     }
 }

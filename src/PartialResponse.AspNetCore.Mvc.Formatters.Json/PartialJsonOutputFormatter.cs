@@ -5,10 +5,10 @@ using System.Buffers;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Newtonsoft.Json;
+using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
 using PartialResponse.Core;
 
 namespace PartialResponse.AspNetCore.Mvc.Formatters
@@ -20,15 +20,15 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
     {
         internal const string BypassPartialResponseKey = "BypassPartialResponse";
 
-        private readonly IArrayPool<char> _charPool;
-        private readonly bool _ignoreCase;
+        private readonly IArrayPool<char> charPool;
+        private readonly bool ignoreCase;
 
         // Perf: JsonSerializers are relatively expensive to create, and are thread safe. We cache
         // the serializer and invalidate it when the settings change.
-        private JsonSerializer _serializer;
+        private JsonSerializer serializer;
 
         /// <summary>
-        /// Initializes a new <see cref="PartialJsonOutputFormatter"/> instance.
+        /// Initializes a new instance of the <see cref="PartialJsonOutputFormatter"/> class.
         /// </summary>
         /// <param name="serializerSettings">
         /// The <see cref="JsonSerializerSettings"/>. Should be either the application-wide settings
@@ -49,14 +49,14 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
                 throw new ArgumentNullException(nameof(charPool));
             }
 
-            SerializerSettings = serializerSettings;
-            _charPool = new JsonArrayPool<char>(charPool);
-            _ignoreCase = ignoreCase;
+            this.SerializerSettings = serializerSettings;
+            this.charPool = new JsonArrayPool<char>(charPool);
+            this.ignoreCase = ignoreCase;
 
-            SupportedEncodings.Add(Encoding.UTF8);
-            SupportedEncodings.Add(Encoding.Unicode);
-            SupportedMediaTypes.Add(MediaTypeHeaderValues.ApplicationJson);
-            SupportedMediaTypes.Add(MediaTypeHeaderValues.TextJson);
+            this.SupportedEncodings.Add(Encoding.UTF8);
+            this.SupportedEncodings.Add(Encoding.Unicode);
+            this.SupportedMediaTypes.Add(MediaTypeHeaderValues.ApplicationJson);
+            this.SupportedMediaTypes.Add(MediaTypeHeaderValues.TextJson);
         }
 
         /// <summary>
@@ -67,41 +67,6 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         /// <see cref="PartialJsonOutputFormatter"/> has been used will have no effect.
         /// </remarks>
         protected JsonSerializerSettings SerializerSettings { get; }
-
-        /// <summary>
-        /// Called during serialization to create the <see cref="JsonWriter"/>.
-        /// </summary>
-        /// <param name="writer">The <see cref="TextWriter"/> used to write.</param>
-        /// <returns>The <see cref="JsonWriter"/> used during serialization.</returns>
-        protected virtual JsonWriter CreateJsonWriter(TextWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-
-            var jsonWriter = new JsonTextWriter(writer)
-            {
-                ArrayPool = _charPool,
-                CloseOutput = false,
-            };
-
-            return jsonWriter;
-        }
-
-        /// <summary>
-        /// Called during serialization to create the <see cref="JsonSerializer"/>.
-        /// </summary>
-        /// <returns>The <see cref="JsonSerializer"/> used during serialization and deserialization.</returns>
-        protected virtual JsonSerializer CreateJsonSerializer()
-        {
-            if (_serializer == null)
-            {
-                _serializer = JsonSerializer.Create(SerializerSettings);
-            }
-
-            return _serializer;
-        }
 
         /// <inheritdoc />
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
@@ -133,13 +98,44 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
 
             using (var writer = context.WriterFactory(response.Body, selectedEncoding))
             {
-                WriteObject(writer, context.Object, fields);
+                this.WriteObject(writer, context.Object, fields);
 
                 // Perf: call FlushAsync to call WriteAsync on the stream with any content left in the TextWriter's
                 // buffers. This is better than just letting dispose handle it (which would result in a synchronous
                 // write).
                 await writer.FlushAsync();
             }
+        }
+
+        /// <summary>
+        /// Called during serialization to create the <see cref="JsonWriter"/>.
+        /// </summary>
+        /// <param name="writer">The <see cref="TextWriter"/> used to write.</param>
+        /// <returns>The <see cref="JsonWriter"/> used during serialization.</returns>
+        protected virtual JsonWriter CreateJsonWriter(TextWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            var jsonWriter = new JsonTextWriter(writer) { ArrayPool = this.charPool, CloseOutput = false, };
+
+            return jsonWriter;
+        }
+
+        /// <summary>
+        /// Called during serialization to create the <see cref="JsonSerializer"/>.
+        /// </summary>
+        /// <returns>The <see cref="JsonSerializer"/> used during serialization and deserialization.</returns>
+        protected virtual JsonSerializer CreateJsonSerializer()
+        {
+            if (this.serializer == null)
+            {
+                this.serializer = JsonSerializer.Create(this.SerializerSettings);
+            }
+
+            return this.serializer;
         }
 
         private bool ShouldBypassPartialResponse(HttpContext httpContext)
@@ -154,13 +150,13 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
 
         private void WriteObject(TextWriter writer, object value, Fields? fields)
         {
-            using (var jsonWriter = CreateJsonWriter(writer))
+            using (var jsonWriter = this.CreateJsonWriter(writer))
             {
-                var jsonSerializer = CreateJsonSerializer();
+                var jsonSerializer = this.CreateJsonSerializer();
 
                 if (fields.HasValue)
                 {
-                    jsonSerializer.Serialize(jsonWriter, value, path => fields.Value.Matches(path, _ignoreCase));
+                    jsonSerializer.Serialize(jsonWriter, value, path => fields.Value.Matches(path, this.ignoreCase));
                 }
                 else
                 {

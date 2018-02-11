@@ -7,19 +7,16 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 {
     internal static class MvcPartialJsonLoggerExtensions
     {
-        private static readonly Action<ILogger, string, Exception> _partialJsonResultExecuting;
+        private static readonly Action<ILogger, string, Exception> LogMessage;
 
         static MvcPartialJsonLoggerExtensions()
         {
-            _partialJsonResultExecuting = LoggerMessage.Define<string>(
-                LogLevel.Information,
-                1,
-                "Executing PartialJsonResult, writing value {Value}.");
+            LogMessage = LoggerMessage.Define<string>(LogLevel.Information, 1, "Executing PartialJsonResult, writing value {Value}.");
         }
 
         public static void PartialJsonResultExecuting(this ILogger logger, object value)
         {
-            _partialJsonResultExecuting(logger, Convert.ToString(value), null);
+            LogMessage(logger, Convert.ToString(value), null);
         }
     }
 }

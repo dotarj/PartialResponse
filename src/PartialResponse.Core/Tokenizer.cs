@@ -55,7 +55,7 @@ namespace PartialResponse.Core
 
             TokenType tokenType;
 
-            if (tokens.TryGetValue(this.GetCurrentCharacter(), out tokenType))
+            if (this.tokens.TryGetValue(this.GetCurrentCharacter(), out tokenType))
             {
                 this.TakeCharacter();
 

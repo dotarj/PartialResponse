@@ -31,34 +31,6 @@ namespace PartialResponse.Core
         }
 
         /// <summary>
-        /// Indicates whether a field matches the specified value.
-        /// </summary>
-        /// <param name="value">The value to match.</param>
-        /// <returns>true if a field matches the specified value; otherwise, false.</returns>
-        public bool Matches(string value)
-        {
-            return this.Matches(value, false);
-        }
-
-        /// <summary>
-        /// Indicates whether a field matches the specified value.
-        /// </summary>
-        /// <param name="value">The value to match.</param>
-        /// <param name="ignoreCase">A value which indicates whether matching should be case-insensitive.</param>
-        /// <returns>true if a field matches the specified value; otherwise, false.</returns>
-        public bool Matches(string value, bool ignoreCase)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            var parts = value.Split('/');
-
-            return this.Values.Any(field => field.Matches(parts, ignoreCase));
-        }
-
-        /// <summary>
         /// Converts to value to a <see cref="Fields"/> object.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -90,6 +62,34 @@ namespace PartialResponse.Core
 
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Indicates whether a field matches the specified value.
+        /// </summary>
+        /// <param name="value">The value to match.</param>
+        /// <returns>true if a field matches the specified value; otherwise, false.</returns>
+        public bool Matches(string value)
+        {
+            return this.Matches(value, false);
+        }
+
+        /// <summary>
+        /// Indicates whether a field matches the specified value.
+        /// </summary>
+        /// <param name="value">The value to match.</param>
+        /// <param name="ignoreCase">A value which indicates whether matching should be case-insensitive.</param>
+        /// <returns>true if a field matches the specified value; otherwise, false.</returns>
+        public bool Matches(string value, bool ignoreCase)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var parts = value.Split('/');
+
+            return this.Values.Any(field => field.Matches(parts, ignoreCase));
         }
     }
 }
