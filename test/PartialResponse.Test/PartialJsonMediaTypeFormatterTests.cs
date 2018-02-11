@@ -11,7 +11,6 @@ using Moq;
 using PartialResponse.Net.Http.Formatting;
 using Xunit;
 
-
 namespace PartialResponse.Net.Http.Test
 {
     public class PartialJsonMediaTypeFormatterTests
@@ -22,10 +21,9 @@ namespace PartialResponse.Net.Http.Test
 
         public PartialJsonMediaTypeFormatterTests()
         {
-            httpRequest.Method = HttpMethod.Get;
+            this.httpRequest.Method = HttpMethod.Get;
 
-            this.formatter = (PartialJsonMediaTypeFormatter)new PartialJsonMediaTypeFormatter().GetPerRequestFormatterInstance(null, httpRequest, null);
-
+            this.formatter = (PartialJsonMediaTypeFormatter)new PartialJsonMediaTypeFormatter().GetPerRequestFormatterInstance(null, this.httpRequest, null);
         }
 
         [Fact]
@@ -34,7 +32,7 @@ namespace PartialResponse.Net.Http.Test
             // Arrange
             this.httpRequest.RequestUri = new Uri("http://localhost?fields=foo/");
 
-            var value = new {};
+            var value = new { };
 
             // Act
             Assert.ThrowsAsync<HttpResponseException>(() => this.WriteAsync(value));
@@ -138,9 +136,9 @@ namespace PartialResponse.Net.Http.Test
         public async Task TheWriteToStreamAsyncMethodShouldBypassPartialResponseIfHttpResponseMessageStatusCodeIsNot200()
         {
             // Arrange
-            var httpResponseMessage =  new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+            var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
 
-            httpRequest.Properties["PR_HttpResponseMessage"] = httpResponseMessage;
+            this.httpRequest.Properties["PR_HttpResponseMessage"] = httpResponseMessage;
 
             this.httpRequest.RequestUri = new Uri("http://localhost?fields=");
 
@@ -163,7 +161,7 @@ namespace PartialResponse.Net.Http.Test
                 .SetupGet(context => context.Response)
                 .Returns((HttpResponseBase)null);
 
-            httpRequest.Properties["MS_HttpContext"] = httpContext;
+            this.httpRequest.Properties["MS_HttpContext"] = httpContext;
 
             this.httpRequest.RequestUri = new Uri("http://localhost?fields=foo");
 
@@ -186,7 +184,7 @@ namespace PartialResponse.Net.Http.Test
                 .SetupGet(context => context.Response)
                 .Returns(this.httpResponse);
 
-            httpRequest.Properties["MS_HttpContext"] = httpContext;
+            this.httpRequest.Properties["MS_HttpContext"] = httpContext;
 
             Mock.Get(this.httpResponse)
                 .SetupGet(httpResponse => httpResponse.StatusCode)

@@ -18,14 +18,14 @@ namespace PartialResponse.Test
         public void TheExecuteActionFilterAsyncMethodShouldThrowIfActionContextIsNull()
         {
             // Assert
-            Assert.ThrowsAsync<ArgumentNullException>(() => partialJsonActionFilter.ExecuteActionFilterAsync(null, CancellationToken.None, () => null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => this.partialJsonActionFilter.ExecuteActionFilterAsync(null, CancellationToken.None, () => null));
         }
 
         [Fact]
         public void TheExecuteActionFilterAsyncMethodShouldThrowIfContinuationIsNull()
         {
             // Assert
-            Assert.ThrowsAsync<ArgumentNullException>(() => partialJsonActionFilter.ExecuteActionFilterAsync(new HttpActionContext(), CancellationToken.None, null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => this.partialJsonActionFilter.ExecuteActionFilterAsync(new HttpActionContext(), CancellationToken.None, null));
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace PartialResponse.Test
             var httpResponeMessage = new HttpResponseMessage();
 
             // Act
-            await partialJsonActionFilter.ExecuteActionFilterAsync(httpActionContext, CancellationToken.None, () => Task.FromResult(httpResponeMessage));
+            await this.partialJsonActionFilter.ExecuteActionFilterAsync(httpActionContext, CancellationToken.None, () => Task.FromResult(httpResponeMessage));
 
             // Assert
             Assert.Equal(httpResponeMessage, httpActionContext.Request.Properties["PR_HttpResponseMessage"]);
