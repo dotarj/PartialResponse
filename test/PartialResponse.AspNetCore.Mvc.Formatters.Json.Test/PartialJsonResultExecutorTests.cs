@@ -1,3 +1,5 @@
+// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+
 using System.Buffers;
 using System.IO;
 using System.Text;
@@ -66,7 +68,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
                 .SetupGet(queryCollection => queryCollection["fields"])
                 .Returns("foo/");
 
-            var partialJsonResult = new PartialJsonResult(new {});
+            var partialJsonResult = new PartialJsonResult(new { });
 
             // Act
             await this.executor.ExecuteAsync(this.actionContext, partialJsonResult);
@@ -88,7 +90,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
                 .SetupGet(queryCollection => queryCollection["fields"])
                 .Returns("foo/");
 
-            var partialJsonResult = new PartialJsonResult(new {});
+            var partialJsonResult = new PartialJsonResult(new { });
 
             // Act
             await this.executor.ExecuteAsync(this.actionContext, partialJsonResult);
