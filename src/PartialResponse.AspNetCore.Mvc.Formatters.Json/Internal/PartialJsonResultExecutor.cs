@@ -20,25 +20,18 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
     /// </summary>
     public class PartialJsonResultExecutor
     {
-        private static readonly string DefaultContentType = new MediaTypeHeaderValue("application/json")
-        {
-            Encoding = Encoding.UTF8
-        }.ToString();
+        private static readonly string DefaultContentType = new MediaTypeHeaderValue("application/json") { Encoding = Encoding.UTF8 }.ToString();
 
-        private readonly IArrayPool<char> _charPool;
+        private readonly IArrayPool<char> charPool;
 
         /// <summary>
-        /// Creates a new <see cref="PartialJsonResultExecutor"/>.
+        /// Initializes a new instance of the <see cref="PartialJsonResultExecutor"/> class.
         /// </summary>
         /// <param name="writerFactory">The <see cref="IHttpResponseStreamWriterFactory"/>.</param>
         /// <param name="logger">The <see cref="ILogger{PartialJsonResultExecutor}"/>.</param>
         /// <param name="options">The <see cref="IOptions{MvcPartialJsonOptions}"/>.</param>
         /// <param name="charPool">The <see cref="ArrayPool{Char}"/> for creating <see cref="T:char[]"/> buffers.</param>
-        public PartialJsonResultExecutor(
-            IHttpResponseStreamWriterFactory writerFactory, 
-            ILogger<PartialJsonResultExecutor> logger, 
-            IOptions<MvcPartialJsonOptions> options,
-            ArrayPool<char> charPool)
+        public PartialJsonResultExecutor(IHttpResponseStreamWriterFactory writerFactory, ILogger<PartialJsonResultExecutor> logger, IOptions<MvcPartialJsonOptions> options, ArrayPool<char> charPool)
         {
             if (writerFactory == null)
             {
@@ -60,10 +53,10 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 throw new ArgumentNullException(nameof(charPool));
             }
 
-            WriterFactory = writerFactory;
-            Logger = logger;
-            Options = options.Value;
-            _charPool = new JsonArrayPool<char>(charPool);
+            this.WriterFactory = writerFactory;
+            this.Logger = logger;
+            this.Options = options.Value;
+            this.charPool = new JsonArrayPool<char>(charPool);
         }
 
         /// <summary>
@@ -113,12 +106,8 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
 
             string resolvedContentType = null;
             Encoding resolvedContentTypeEncoding = null;
-            ResponseContentTypeHelper.ResolveContentTypeAndEncoding(
-                result.ContentType,
-                response.ContentType,
-                DefaultContentType,
-                out resolvedContentType,
-                out resolvedContentTypeEncoding);
+
+            ResponseContentTypeHelper.ResolveContentTypeAndEncoding(result.ContentType, response.ContentType, DefaultContentType, out resolvedContentType, out resolvedContentTypeEncoding);
 
             response.ContentType = resolvedContentType;
 
@@ -127,14 +116,15 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 response.StatusCode = result.StatusCode.Value;
             }
 
-            var serializerSettings = result.SerializerSettings ?? Options.SerializerSettings;
+            var serializerSettings = result.SerializerSettings ?? this.Options.SerializerSettings;
 
-            Logger.PartialJsonResultExecuting(result.Value);
-            using (var writer = WriterFactory.CreateWriter(response.Body, resolvedContentTypeEncoding))
+            this.Logger.PartialJsonResultExecuting(result.Value);
+
+            using (var writer = this.WriterFactory.CreateWriter(response.Body, resolvedContentTypeEncoding))
             {
                 using (var jsonWriter = new JsonTextWriter(writer))
                 {
-                    jsonWriter.ArrayPool = _charPool;
+                    jsonWriter.ArrayPool = this.charPool;
                     jsonWriter.CloseOutput = false;
 
                     var jsonSerializer = JsonSerializer.Create(serializerSettings);

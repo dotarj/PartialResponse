@@ -20,10 +20,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters
         {
             return new JsonSerializerSettings
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy(),
-                },
+                ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy(), },
 
                 MissingMemberHandling = MissingMemberHandling.Ignore,
 

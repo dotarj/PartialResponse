@@ -11,8 +11,16 @@ using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
 
 namespace PartialResponse.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Provides extension methods for the <see cref="IMvcBuilder"/> interface.
+    /// </summary>
     public static class MvcPartialJsonMvcBuilderExtensions
     {
+        /// <summary>
+        /// Adds services to the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="builder">The <see cref="IMvcBuilder"/>.</param>
+        /// <returns>A reference to the current instance of <see cref="IMvcBuilder"/>.</returns>
         public static IMvcBuilder AddPartialJsonFormatters(this IMvcBuilder builder)
         {
             if (builder == null)
@@ -21,12 +29,18 @@ namespace PartialResponse.Extensions.DependencyInjection
             }
 
             AddPartialJsonFormatterServices(builder.Services);
+
             return builder;
         }
 
-        public static IMvcBuilder AddPartialJsonFormatters(
-            this IMvcBuilder builder,
-            Action<JsonSerializerSettings> setupAction)
+        /// <summary>
+        /// Adds services to the <see cref="IServiceCollection"/> and the <paramref name="setupAction"/> to configure
+        /// the <see cref="JsonSerializerSettings"/>.
+        /// </summary>
+        /// <param name="builder">The <see cref="IMvcBuilder"/>.</param>
+        /// <param name="setupAction">An action to configure the <see cref="JsonSerializerSettings"/>.</param>
+        /// <returns>A reference to the current instance of <see cref="IMvcBuilder"/>.</returns>
+        public static IMvcBuilder AddPartialJsonFormatters(this IMvcBuilder builder, Action<JsonSerializerSettings> setupAction)
         {
             if (builder == null)
             {
@@ -46,14 +60,12 @@ namespace PartialResponse.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds configuration of <see cref="MvcPartialJsonOptions"/> for the application.
+        /// Adds the <paramref name="setupAction"/> to configure the <see cref="JsonSerializerSettings"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IMvcBuilder"/>.</param>
-        /// <param name="setupAction">The <see cref="MvcPartialJsonOptions"/> which need to be configured.</param>
-        /// <returns>The <see cref="IMvcBuilder"/>.</returns>
-        public static IMvcBuilder AddPartialJsonOptions(
-           this IMvcBuilder builder,
-           Action<MvcPartialJsonOptions> setupAction)
+        /// <param name="setupAction">An action to configure the <see cref="MvcPartialJsonOptions"/>.</param>
+        /// <returns>A reference to the current instance of <see cref="IMvcBuilder"/>.</returns>
+        public static IMvcBuilder AddPartialJsonOptions(this IMvcBuilder builder, Action<MvcPartialJsonOptions> setupAction)
         {
             if (builder == null)
             {
@@ -66,14 +78,14 @@ namespace PartialResponse.Extensions.DependencyInjection
             }
 
             builder.Services.Configure<MvcPartialJsonOptions>(setupAction);
+
             return builder;
         }
 
         // Internal for testing.
         internal static void AddPartialJsonFormatterServices(IServiceCollection services)
         {
-            services.TryAddEnumerable(
-                ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, MvcPartialJsonMvcOptionsSetup>());
+            services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, MvcPartialJsonMvcOptionsSetup>());
             services.TryAddSingleton<PartialJsonResultExecutor>();
         }
     }

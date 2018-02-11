@@ -2,9 +2,9 @@
 
 using System;
 using System.Threading.Tasks;
-using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
 
 namespace Microsoft.AspNetCore.Mvc
 {
@@ -14,16 +14,16 @@ namespace Microsoft.AspNetCore.Mvc
     public class PartialJsonResult : ActionResult
     {
         /// <summary>
-        /// Creates a new <see cref="PartialJsonResult"/> with the given <paramref name="value"/>.
+        /// Initializes a new instance of the <see cref="PartialJsonResult"/> class.
         /// </summary>
         /// <param name="value">The value to format as JSON.</param>
         public PartialJsonResult(object value)
         {
-            Value = value;
+            this.Value = value;
         }
 
         /// <summary>
-        /// Creates a new <see cref="PartialJsonResult"/> with the given <paramref name="value"/>.
+        /// Initializes a new instance of the <see cref="PartialJsonResult"/> class.
         /// </summary>
         /// <param name="value">The value to format as JSON.</param>
         /// <param name="serializerSettings">The <see cref="JsonSerializerSettings"/> to be used by
@@ -35,8 +35,8 @@ namespace Microsoft.AspNetCore.Mvc
                 throw new ArgumentNullException(nameof(serializerSettings));
             }
 
-            Value = value;
-            SerializerSettings = serializerSettings;
+            this.Value = value;
+            this.SerializerSettings = serializerSettings;
         }
 
         /// <summary>
@@ -69,6 +69,7 @@ namespace Microsoft.AspNetCore.Mvc
 
             var services = context.HttpContext.RequestServices;
             var executor = services.GetRequiredService<PartialJsonResultExecutor>();
+
             return executor.ExecuteAsync(context, this);
         }
     }

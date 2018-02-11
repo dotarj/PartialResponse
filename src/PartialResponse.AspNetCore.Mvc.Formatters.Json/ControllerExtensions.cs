@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Microsoft.AspNetCore.Mvc
 {
+    /// <summary>
+    /// Provides extension methods for the <see cref="ControllerBase"/> class.
+    /// </summary>
     public static class ControllerExtensions
     {
         /// <summary>
