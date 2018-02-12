@@ -34,9 +34,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 var context = new SerializerContext(shouldSerialize);
                 var token = JToken.FromObject(value, jsonSerializer);
 
-                var array = token as JArray;
-
-                if (array != null)
+                if (token is JArray array)
                 {
                     RemoveArrayElements(array, null, context);
 
@@ -44,9 +42,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 }
                 else
                 {
-                    var @object = token as JObject;
-
-                    if (@object != null)
+                    if (token is JObject @object)
                     {
                         RemoveObjectProperties(@object, null, context);
 
@@ -97,7 +93,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 {
                     var path = CombinePath(currentPath, property.Name);
 
-                    return context.ShouldSerialize(path);
+                    return !context.ShouldSerialize(path);
                 })
                 .ToList()
                 .ForEach(property => property.Remove());

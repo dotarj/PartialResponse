@@ -97,7 +97,7 @@ namespace PartialResponse.Net.Http.Formatting
                 {
                     var path = CombinePath(currentPath, property.Name);
 
-                    return context.ShouldSerialize(path);
+                    return !context.ShouldSerialize(path);
                 })
                 .ToList()
                 .ForEach(property => property.Remove());

@@ -22,7 +22,7 @@ namespace PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal
                 return this.cache[path];
             }
 
-            var result = !this.shouldSerialize(path);
+            var result = this.shouldSerialize(path);
 
             this.cache.Add(path, result);
 
