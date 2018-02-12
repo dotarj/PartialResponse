@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <AssemblyOriginatorKeyFile>../../PartialResponse.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>Arjen Post</Authors>
     <Copyright>Copyright (c) Arjen Post</Copyright>
     <Description>Partial response (fields) core components.</Description>

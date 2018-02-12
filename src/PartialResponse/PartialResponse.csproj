@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <AssemblyOriginatorKeyFile>../../PartialResponse.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>Arjen Post</Authors>
     <Copyright>Copyright (c) Arjen Post</Copyright>
     <Description>ASP.NET Web API formatter for partial response (fields) JSON output.</Description>
