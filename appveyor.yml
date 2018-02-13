@@ -1,0 +1,41 @@
+before_build:
+- ps: |
+      Write-Host "> dotnet restore"
+
+      dotnet restore -v m
+
+      Write-Host "< dotnet restore"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+build_script:
+- ps: |
+      Write-Host "> dotnet build"
+
+      dotnet build -c Release -v m 
+
+      Write-Host "< dotnet build"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+test_script:
+- ps: |
+      Write-Host "> dotnet test"
+
+      cd $env:APPVEYOR_BUILD_FOLDER
+
+      $shouldExit = $FALSE;
+
+      foreach ($testFolder in ls test\*.Tests) {
+            Push-Location $testFolder
+
+            Write-Host "  > dotnet test $testFolder"
+
+            dotnet test -c Release
+
+            Write-Host "  < dotnet test $testFolder"
+            if ($LastExitCode -ne 0) { $shouldExit = $TRUE }
+
+            Pop-Location
+      }
+
+      Write-Host "< dotnet test"
+      if ($shouldExit -eq $TRUE) { $host.SetShouldExit(1) }
