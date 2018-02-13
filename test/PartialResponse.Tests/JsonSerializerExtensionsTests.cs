@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using PartialResponse.Net.Http.Formatting;
 using Xunit;
 
-namespace PartialResponse.Net.Http.Test
+namespace PartialResponse.Tests
 {
     public class JsonSerializerExtensionsTests
     {

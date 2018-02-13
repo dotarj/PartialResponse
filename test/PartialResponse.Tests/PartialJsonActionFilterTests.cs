@@ -8,7 +8,7 @@ using System.Web.Http.Controllers;
 using Moq;
 using Xunit;
 
-namespace PartialResponse.Test
+namespace PartialResponse.Tests
 {
     public class PartialJsonActionFilterTests
     {
