@@ -3,7 +3,7 @@
   <PropertyGroup>
     <DebugType Condition="$(codecov) == 'true'">full</DebugType>
     <IsPackable>false</IsPackable>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
@@ -12,40 +12,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Web" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Moq" Version="4.8.1" />
-    <PackageReference Include="OpenCover" Version="4.6.519" PrivateAssets="All" />
-    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Reference Include="System.Web" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
-    <AdditionalFiles Include="..\stylecop.ruleset">
-      <Link>stylecop.ruleset</Link>
-    </AdditionalFiles>
+    <AdditionalFiles Include="../../stylecop.json" Visible="False" />
   </ItemGroup>
 
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
 </Project>

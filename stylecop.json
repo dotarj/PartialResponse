@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
   "settings": {
     "documentationRules": {
-      "copyrightText": "Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.",
+      "copyrightText": "Copyright (c) Arjen Post. See LICENSE and NOTICE in the project root for license information.",
       "documentInternalElements": false,
       "xmlHeader": false
     },

@@ -6,22 +6,21 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net45</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>beta4</VersionSuffix>
+    <Version>0.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>../../PartialResponse.snk</AssemblyOriginatorKeyFile>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Arjen Post</Authors>
-    <Copyright>Copyright (c) Arjen Post</Copyright>
+    <Copyright>Copyright 2018 Arjen Post</Copyright>
     <Description>ASP.NET Web API formatter for partial response (fields) JSON output.</Description>
     <PackageId>WebApi.PartialResponse</PackageId>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/dotarj/PartialResponse</PackageProjectUrl>
     <PackageTags>aspnet;webapi;aspnetwebapi;web;api;json;partial;response;partialresponse;fields</PackageTags>
     <RepositoryType>git</RepositoryType>
@@ -29,11 +28,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PartialResponse.Core\PartialResponse.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.0.0" />
+    <PackageReference Include="PartialResponse.Core" Version="0.0.0-ci.sha.a31b16f.build.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
@@ -45,9 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
+    <AdditionalFiles Include="../../stylecop.json" Visible="False" />
   </ItemGroup>
 
 </Project>

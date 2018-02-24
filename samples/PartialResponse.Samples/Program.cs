@@ -1,14 +1,14 @@
-﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+﻿// Copyright (c) Arjen Post. See LICENSE and NOTICE in the project root for license information.
 
 using PartialResponse.Demo;
 
 namespace PartialResponse
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            //OwinHostDemo.Run("http://localhost:9000/");
+            // OwinHostDemo.Run("http://localhost:9000/");
             HttpSelfHostDemo.Run("http://localhost:9001/");
         }
     }

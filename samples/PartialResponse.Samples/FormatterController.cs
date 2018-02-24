@@ -1,4 +1,4 @@
-﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+﻿// Copyright (c) Arjen Post. See LICENSE and NOTICE in the project root for license information.
 
 using System.Collections.Generic;
 using System.Net;
@@ -10,7 +10,7 @@ namespace PartialResponse
     {
         public IHttpActionResult Get(int statusCode = 200)
         {
-            return this.Content((HttpStatusCode)statusCode, new List<dynamic>
+            var content = new List<dynamic>
             {
                 new
                 {
@@ -39,7 +39,9 @@ namespace PartialResponse
                         Qux = 6
                     }
                 }
-            });
+            };
+
+            return this.Content((HttpStatusCode)statusCode, content);
         }
     }
 }

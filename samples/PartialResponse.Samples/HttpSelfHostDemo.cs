@@ -1,4 +1,4 @@
-﻿// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+﻿// Copyright (c) Arjen Post. See LICENSE and NOTICE in the project root for license information.
 
 using System;
 using System.Web.Http;
@@ -22,6 +22,7 @@ namespace PartialResponse.Demo
             {
                 server.OpenAsync().Wait();
 
+                Console.WriteLine($"Now listening on: {baseAddress}");
                 Console.WriteLine("Press any key to exit...");
                 Console.Read();
             }
