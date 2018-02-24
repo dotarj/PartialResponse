@@ -1,0 +1,133 @@
+environment:
+  MYGET_API_KEY:
+    secure: yIATrcAITJk87DWMBSiKyT9ZFXy9FJCeIaJnnX2WI0GO69Fo0KtqrTKwcgG21q3O
+  NUGET_API_KEY:
+    secure: t2W6DkLWdNV44RIYcbAcd4JCvVasaWY7R+XqOBzg94XTv6TNzeNxxii24AlcpZs8
+
+image: Visual Studio 2017
+
+skip_tags: false
+
+configuration: Release
+
+init:
+- ps: |
+      If ($($env:APPVEYOR_REPO_TAG) -eq "true") {
+        $env:RELEASE_VERSION = $env:APPVEYOR_REPO_TAG_NAME
+      }
+      else {
+        $env:RELEASE_VERSION = "0.0.0-ci.sha.$($env:APPVEYOR_REPO_COMMIT.Substring(0, 7)).build.$env:APPVEYOR_BUILD_NUMBER"
+      }
+
+      Update-AppveyorBuild -Version $env:RELEASE_VERSION
+
+install:
+- ps: |
+      Write-Host "STARTED installing code coverage tools" -ForegroundColor Magenta
+
+      choco install opencover.portable
+
+      choco install codecov
+
+      Write-Host "FINISHED installing code coverage tools" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+dotnet_csproj:
+  patch: true
+  file: 'src\$(APPVEYOR_PROJECT_NAME)\$(APPVEYOR_PROJECT_NAME).csproj'
+  version: '$(RELEASE_VERSION)'
+
+before_build:
+- ps: |
+      Write-Host "STARTED restoring project dependencies" -ForegroundColor Magenta
+
+      dotnet restore -v m
+
+      Write-Host "FINISHED restoring project dependencies" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+build_script:
+- ps: |
+      Write-Host "STARTED building project" -ForegroundColor Magenta
+
+      dotnet build -c $env:CONFIGURATION --no-restore -v m
+
+      Write-Host "FINISHED building project" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+after_build:
+- ps: |
+      Write-Host "STARTED verifying strong name" -ForegroundColor Magenta
+
+      $sn = "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\sn.exe"
+
+      foreach ($assembly in ls "src\$env:APPVEYOR_PROJECT_NAME\bin\$env:CONFIGURATION\*\$env:APPVEYOR_PROJECT_NAME.dll") {
+          &$sn -vf $assembly
+
+          if ($LastExitCode -ne 0) { Break }
+      }
+
+      Write-Host "FINISHED verifying strong name" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+- ps: |
+      Write-Host "STARTED creating NuGet package" -ForegroundColor Magenta
+
+      dotnet pack src\$env:APPVEYOR_PROJECT_NAME -c $env:CONFIGURATION --no-restore --no-build --include-symbols --output ..\..\artifacts -v m
+
+      Write-Host "FINISHED creating NuGet package" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+test_script:
+- ps: |
+      Write-Host "STARTED running unit tests" -ForegroundColor Magenta
+
+      dotnet test test\$env:APPVEYOR_PROJECT_NAME.Tests -c $env:CONFIGURATION --no-restore --no-build -v m
+
+      Write-Host "FINISHED running unit tests" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+after_test:
+- ps: |
+      Write-Host "STARTED generating code coverage report" -ForegroundColor Magenta
+
+      dotnet build -c $env:CONFIGURATION --no-restore -v m /p:codecov=true
+
+      OpenCover.Console.exe -target:"$env:XUNIT20\xunit.console.x86.exe" -targetargs:"test\$env:APPVEYOR_PROJECT_NAME.Tests\bin\$env:CONFIGURATION\net471\$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]* -[$env:APPVEYOR_PROJECT_NAME.Samples]*" -hideskipped:All -output:".\coverage.xml"
+
+      Write-Host "FINISHED generating code coverage report" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+- ps: |
+      Write-Host "STARTED uploading code coverage report" -ForegroundColor Magenta
+
+      codecov -f coverage.xml
+
+      Write-Host "FINISHED uploading code coverage report" -ForegroundColor Magenta
+
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+artifacts:
+  - path: artifacts\*.nupkg
+
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/partialresponse/api/v2
+  api_key: $(MYGET_API_KEY)
+  skip_symbols: false
+  symbol_server: https://www.myget.org/F/partialresponse/symbols/api/v2/package
+  on:
+    appveyor_repo_tag: false
+
+- provider: NuGet
+  api_key: $(NUGET_API_KEY)
+  skip_symbols: false
+  on:
+    appveyor_repo_tag: true
