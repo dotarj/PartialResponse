@@ -1,4 +1,6 @@
 environment:
+  VERIFY_STRONG_NAME: true
+  MYGET_FEED_NAME: partialresponse
   MYGET_API_KEY:
     secure: yIATrcAITJk87DWMBSiKyT9ZFXy9FJCeIaJnnX2WI0GO69Fo0KtqrTKwcgG21q3O
   NUGET_API_KEY:
@@ -35,8 +37,8 @@ install:
 
 dotnet_csproj:
   patch: true
-  file: 'src\$(APPVEYOR_PROJECT_NAME)\$(APPVEYOR_PROJECT_NAME).csproj'
-  version: '$(RELEASE_VERSION)'
+  file: src\$(APPVEYOR_PROJECT_NAME)\$(APPVEYOR_PROJECT_NAME).csproj
+  version: $(RELEASE_VERSION)
 
 before_build:
 - ps: |
@@ -60,19 +62,21 @@ build_script:
 
 after_build:
 - ps: |
-      Write-Host "STARTED verifying strong name" -ForegroundColor Magenta
+      If ($($env:VERIFY_STRONG_NAME) -eq "true") {
+          Write-Host "STARTED verifying strong name" -ForegroundColor Magenta
 
-      $sn = "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\sn.exe"
+          $sn = "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\sn.exe"
 
-      foreach ($assembly in ls "src\$env:APPVEYOR_PROJECT_NAME\bin\$env:CONFIGURATION\*\$env:APPVEYOR_PROJECT_NAME.dll") {
-          &$sn -vf $assembly
+          foreach ($assembly in ls "src\$env:APPVEYOR_PROJECT_NAME\bin\$env:CONFIGURATION\*\$env:APPVEYOR_PROJECT_NAME.dll") {
+              &$sn -vf $assembly
 
-          if ($LastExitCode -ne 0) { Break }
+              if ($LastExitCode -ne 0) { Break }
+          }
+
+          Write-Host "FINISHED verifying strong name" -ForegroundColor Magenta
+
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
       }
-
-      Write-Host "FINISHED verifying strong name" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
 
 - ps: |
       Write-Host "STARTED creating NuGet package" -ForegroundColor Magenta
@@ -116,13 +120,14 @@ after_test:
 
 artifacts:
   - path: artifacts\*.nupkg
+    name: NuGet
 
 deploy:
 - provider: NuGet
-  server: https://www.myget.org/F/partialresponse/api/v2
+  server: https://www.myget.org/F/$(MYGET_FEED_NAME)/api/v2
   api_key: $(MYGET_API_KEY)
   skip_symbols: false
-  symbol_server: https://www.myget.org/F/partialresponse/symbols/api/v2/package
+  symbol_server: https://www.myget.org/F/$(MYGET_FEED_NAME)/symbols/api/v2/package
   on:
     appveyor_repo_tag: false
 

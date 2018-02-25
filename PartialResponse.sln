@@ -15,6 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartialResponse.Samples", "samples\PartialResponse.Samples\PartialResponse.Samples.csproj", "{64AFFB63-CD64-4D2A-8BC6-AC6BF248723C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CBBAFE9-A182-4613-9760-7A9D124BB86B}"
+	ProjectSection(SolutionItems) = preProject
+		.appveyor.yml = .appveyor.yml
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		NOTICE = NOTICE
+		nuget.config = nuget.config
+		README.md = README.md
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
