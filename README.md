@@ -1,7 +1,7 @@
 # ASP.NET Web API Partial Response
 
 [![apache](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/dotarj/PartialResponse/master/LICENSE)
-[![nuget](https://img.shields.io/nuget/v/WebApi.PartialResponse.svg)](https://www.nuget.org/packages/WebApi.PartialResponse)
+[![nuget](https://img.shields.io/nuget/dt/WebApi.PartialResponse.svg)](https://www.nuget.org/packages/WebApi.PartialResponse)
 [![appveyor](https://ci.appveyor.com/api/projects/status/7ylaqahgotccbdsx?svg=true)](https://ci.appveyor.com/project/dotarj/partialresponse)
 [![sonarqube](https://sonarcloud.io/api/badges/gate?key=PartialResponse)](https://sonarcloud.io/dashboard?id=PartialResponse)
 [![codecov](https://codecov.io/gh/dotarj/PartialResponse/branch/master/graph/badge.svg)](https://codecov.io/gh/dotarj/PartialResponse)
