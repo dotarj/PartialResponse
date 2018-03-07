@@ -5,35 +5,60 @@ environment:
     secure: yIATrcAITJk87DWMBSiKyT9ZFXy9FJCeIaJnnX2WI0GO69Fo0KtqrTKwcgG21q3O
   NUGET_API_KEY:
     secure: t2W6DkLWdNV44RIYcbAcd4JCvVasaWY7R+XqOBzg94XTv6TNzeNxxii24AlcpZs8
+  SONARQUBE_ORGANIZATION: dotarj-github
+  SONARQUBE_TOKEN:
+    secure: VjzTjdflfbbZpOEo06eEy0GCSnBwVd7Tz78ESSibL7YXi5/AHQ8axjVEEQrKAkv/
+  SONARQUBE_GITHUB_TOKEN:
+    secure: RMaFeYDkBVoi2Ra+F1rXjxzRn13eskDkfMpGLvOhGG3+pD+LavWf8GyUcPU2ngAy
 
 image: Visual Studio 2017
 
 skip_tags: false
 
+branches:
+  only:
+    - master
+
 configuration: Release
 
 init:
 - ps: |
-      If ($($env:APPVEYOR_REPO_TAG) -eq "true") {
-        $env:RELEASE_VERSION = $env:APPVEYOR_REPO_TAG_NAME
-      }
-      else {
-        $env:RELEASE_VERSION = "0.0.0-ci.sha.$($env:APPVEYOR_REPO_COMMIT.Substring(0, 7)).build.$env:APPVEYOR_BUILD_NUMBER"
+      function Execute-Action {
+          param($description, $action)
+
+          Write-Host (Get-Date).ToString("hh:mm:ss.fff") "STARTED $description" -ForegroundColor Magenta
+
+          &$action
+
+          Write-Host (Get-Date).ToString("hh:mm:ss.fff") "FINISHED $description" -ForegroundColor Magenta
+
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
       }
 
-      Update-AppveyorBuild -Version $env:RELEASE_VERSION
+- ps: |
+      Execute-Action "updating build version" {
+         If ($env:APPVEYOR_REPO_TAG -eq $true) {
+             $env:RELEASE_VERSION = $env:APPVEYOR_REPO_TAG_NAME
+         }
+         else {
+             $env:RELEASE_VERSION = "0.0.0-ci.sha.$($env:APPVEYOR_REPO_COMMIT.Substring(0, 7)).build.$env:APPVEYOR_BUILD_NUMBER"
+         }
+
+         Write-Host "Build version:" $env:RELEASE_VERSION -ForegroundColor White
+
+         Update-AppveyorBuild -Version $env:RELEASE_VERSION
+      }
+
+- ps: |
+      Execute-Action "updating path variable" {
+          $env:PATH = $env:PATH + ";C:/Program Files (x86)/Microsoft SDKs/Windows/v10.0A/bin/NETFX 4.7 Tools"
+      }
 
 install:
 - ps: |
-      Write-Host "STARTED installing code coverage tools" -ForegroundColor Magenta
-
-      choco install opencover.portable
-
-      choco install codecov
-
-      Write-Host "FINISHED installing code coverage tools" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+      Execute-Action "installing tools" {
+          choco install codecov msbuild-sonarqube-runner opencover.portable
+      }
 
 dotnet_csproj:
   patch: true
@@ -42,84 +67,69 @@ dotnet_csproj:
 
 before_build:
 - ps: |
-      Write-Host "STARTED restoring project dependencies" -ForegroundColor Magenta
-
-      dotnet restore -v m
-
-      Write-Host "FINISHED restoring project dependencies" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
-
-build_script:
-- ps: |
-      Write-Host "STARTED building project" -ForegroundColor Magenta
-
-      dotnet build -c $env:CONFIGURATION --no-restore -v m
-
-      Write-Host "FINISHED building project" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
-
-after_build:
-- ps: |
-      If ($($env:VERIFY_STRONG_NAME) -eq "true") {
-          Write-Host "STARTED verifying strong name" -ForegroundColor Magenta
-
-          $sn = "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\sn.exe"
-
-          foreach ($assembly in ls "src\$env:APPVEYOR_PROJECT_NAME\bin\$env:CONFIGURATION\*\$env:APPVEYOR_PROJECT_NAME.dll") {
-              &$sn -vf $assembly
-
-              if ($LastExitCode -ne 0) { Break }
-          }
-
-          Write-Host "FINISHED verifying strong name" -ForegroundColor Magenta
-
-          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+      Execute-Action "restoring project dependencies" {
+          dotnet restore -v m
       }
 
 - ps: |
-      Write-Host "STARTED creating NuGet package" -ForegroundColor Magenta
+      Execute-Action "beginning code analysis" {
+          if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {
+              MSBuild.SonarQube.Runner.exe begin /o:$env:SONARQUBE_ORGANIZATION /k:$env:APPVEYOR_PROJECT_NAME /v:$env:APPVEYOR_BUILD_VERSION /d:sonar.host.url=https://sonarcloud.io /d:sonar.login=$env:SONARQUBE_TOKEN /d:sonar.cs.opencover.reportsPaths=coverage.xml /d:sonar.coverage.exclusions=**/*Tests.cs /d:sonar.github.pullRequest=$env:APPVEYOR_PULL_REQUEST_NUMBER /d:sonar.github.repository=$env:APPVEYOR_REPO_NAME /d:sonar.github.oauth=$env:SONARQUBE_GITHUB_TOKEN
+          }
+          else {
+              MSBuild.SonarQube.Runner.exe begin /o:$env:SONARQUBE_ORGANIZATION /k:$env:APPVEYOR_PROJECT_NAME /v:$env:APPVEYOR_BUILD_VERSION /d:sonar.host.url=https://sonarcloud.io /d:sonar.login=$env:SONARQUBE_TOKEN /d:sonar.cs.opencover.reportsPaths=coverage.xml /d:sonar.coverage.exclusions=**/*Tests.cs
+          }
+      }
 
-      dotnet pack src\$env:APPVEYOR_PROJECT_NAME -c $env:CONFIGURATION --no-restore --no-build --include-symbols --output ..\..\artifacts -v m
+build_script:
+- ps: |
+      Execute-Action "building project" {
+          dotnet build -c $env:CONFIGURATION --no-restore -v m
+      }
 
-      Write-Host "FINISHED creating NuGet package" -ForegroundColor Magenta
+after_build:
+- ps: |
+      If ($env:VERIFY_STRONG_NAME -eq $true) {
+          Execute-Action "verifying strong name" {
+              foreach ($assembly in ls "src/$env:APPVEYOR_PROJECT_NAME/bin/$env:CONFIGURATION/*/$env:APPVEYOR_PROJECT_NAME.dll") {
+                  sn.exe -vf $assembly
 
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+                  if ($LastExitCode -ne 0) { Break }
+              }
+          }
+      }
+
+- ps: |
+      Execute-Action "creating NuGet package" {
+          dotnet pack src/$env:APPVEYOR_PROJECT_NAME -c $env:CONFIGURATION --no-restore --no-build --include-symbols --output ../../artifacts -v m
+      }
 
 test_script:
 - ps: |
-      Write-Host "STARTED running unit tests" -ForegroundColor Magenta
-
-      dotnet test test\$env:APPVEYOR_PROJECT_NAME.Tests -c $env:CONFIGURATION --no-restore --no-build -v m
-
-      Write-Host "FINISHED running unit tests" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+      Execute-Action "running unit tests" {
+          dotnet test test/$env:APPVEYOR_PROJECT_NAME.Tests -c $env:CONFIGURATION --no-restore --no-build -v m
+      }
 
 after_test:
 - ps: |
-      Write-Host "STARTED generating code coverage report" -ForegroundColor Magenta
+      Execute-Action "generating code coverage report" {
+          dotnet build -c $env:CONFIGURATION --no-restore -v m /p:codecov=true
 
-      dotnet build -c $env:CONFIGURATION --no-restore -v m /p:codecov=true
-
-      OpenCover.Console.exe -target:"$env:XUNIT20\xunit.console.x86.exe" -targetargs:"test\$env:APPVEYOR_PROJECT_NAME.Tests\bin\$env:CONFIGURATION\net471\$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]* -[$env:APPVEYOR_PROJECT_NAME.Samples]*" -hideskipped:All -output:".\coverage.xml"
-
-      Write-Host "FINISHED generating code coverage report" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+          OpenCover.Console.exe -target:"$env:XUNIT20/xunit.console.x86.exe" -targetargs:"test/$env:APPVEYOR_PROJECT_NAME.Tests/bin/$env:CONFIGURATION/net471/$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]* -[$env:APPVEYOR_PROJECT_NAME.Samples]*" -hideskipped:All -output:"./coverage.xml"
+      }
 
 - ps: |
-      Write-Host "STARTED uploading code coverage report" -ForegroundColor Magenta
+      Execute-Action "uploading code coverage report" {
+          codecov.exe -f coverage.xml
+      }
 
-      codecov -f coverage.xml
-
-      Write-Host "FINISHED uploading code coverage report" -ForegroundColor Magenta
-
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+- ps: |
+      Execute-Action "ending code analysis" {
+          MSBuild.SonarQube.Runner.exe end /d:sonar.login=$env:SONARQUBE_TOKEN
+      }
 
 artifacts:
-  - path: artifacts\*.nupkg
+  - path: artifacts/*.nupkg
     name: NuGet
 
 deploy:

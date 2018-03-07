@@ -2,8 +2,8 @@
 
 [![apache](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/dotarj/PartialResponse/master/LICENSE)
 [![nuget](https://img.shields.io/nuget/v/WebApi.PartialResponse.svg)](https://www.nuget.org/packages/WebApi.PartialResponse)
-[![myget](https://img.shields.io/myget/partialresponse/v/WebApi.PartialResponse.svg)](https://www.myget.org/feed/partialresponse/package/nuget/WebApi.PartialResponse)
 [![appveyor](https://ci.appveyor.com/api/projects/status/7ylaqahgotccbdsx?svg=true)](https://ci.appveyor.com/project/dotarj/partialresponse)
+[![sonarqube](https://sonarcloud.io/api/badges/gate?key=PartialResponse)](https://sonarcloud.io/dashboard?id=PartialResponse)
 [![codecov](https://codecov.io/gh/dotarj/PartialResponse/branch/master/graph/badge.svg)](https://codecov.io/gh/dotarj/PartialResponse)
 
 PartialResponse provides JSON partial response (partial resource) support for ASP.NET Web API. This package is also [available for ASP.NET Core MVC](https://github.com/dotarj/PartialResponse.AspNetCore.Mvc.Formatters.Json/).
@@ -48,6 +48,6 @@ In practice, these rules often allow several different `fields` parameter values
 * `fields=items(id,snippet/title,snippet/position)`
 * `fields=items(id,snippet(title,position))`
 
-**Note:** As with all query parameter values, the 'fields' parameter value must be URL encoded. For better readability, the examples in this document omit the encoding.
+**Note:** As with all query parameter values, the `fields` parameter value must be URL encoded. For better readability, the examples in this document omit the encoding.
 
 **Note:** Due to the relatively slow performance of LINQ to JSON (Json.NET), the usage of PartialJsonOutputFormatter has a performance impact compared to the regular Json.NET serializer. Because of the reduced traffic, the overhead in time could be neglected.
